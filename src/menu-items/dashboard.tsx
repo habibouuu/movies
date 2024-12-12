@@ -22,17 +22,17 @@ const dashboard: NavItemType = {
   children: [
     {
       id: 'trending',
-      title: <FormattedMessage id="trending" />,
+      title: <FormattedMessage id="Trending" />,
       type: 'item',
-      url: '/trending',
+      url: '/',
       icon: icons.IconDashboard,
       breadcrumbs: false
     },
     {
-      id: "what's new",
-      title: <FormattedMessage id="what's new" />,
+      id: "upcoming",
+      title: <FormattedMessage id="Upcoming" />,
       type: 'item',
-      url: '/whatsnew',
+      url: '/upcoming',
       icon: icons.IconDeviceAnalytics,
       breadcrumbs: false
     }

@@ -28,6 +28,7 @@ import NotificationList from './NotificationList';
 
 // assets
 import { IconBell } from '@tabler/icons-react';
+import SearchIcon from '@mui/icons-material/Search';
 
 // types
 import { ThemeMode } from 'types/config';
@@ -90,7 +91,9 @@ const NotificationSection = () => {
 
   return (
     <>
-      <Box
+      <Link
+
+      href='/search'
         sx={{
           ml: 2,
           [theme.breakpoints.down('lg')]: {
@@ -117,91 +120,9 @@ const NotificationSection = () => {
           onClick={handleToggle}
           color="inherit"
         >
-          <IconBell stroke={1.5} size="20px" />
+          <SearchIcon stroke={1.5} size="20px" />
         </Avatar>
-      </Box>
-
-      <Popper
-        placement={downMD ? 'bottom' : 'bottom-end'}
-        open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
-        modifiers={[
-          {
-            name: 'offset',
-            options: {
-              offset: [downMD ? 5 : 0, 20]
-            }
-          }
-        ]}
-      >
-        {({ TransitionProps }) => (
-          <ClickAwayListener onClickAway={handleClose}>
-            <Transitions position={downMD ? 'top' : 'top-right'} in={open} {...TransitionProps}>
-              <Paper>
-                {open && (
-                  <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                    <Grid container direction="column" spacing={2}>
-                      <Grid item xs={12}>
-                        <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2, px: 2 }}>
-                          <Grid item>
-                            <Stack direction="row" spacing={2}>
-                              <Typography variant="subtitle1">All Notification</Typography>
-                              <Chip size="small" label="01" sx={{ color: 'background.default', bgcolor: 'warning.dark' }} />
-                            </Stack>
-                          </Grid>
-                          <Grid item>
-                            <Typography component={Link} href="#" variant="subtitle2" color="primary">
-                              Mark as all read
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 205px)', overflowX: 'hidden' }}>
-                          <Grid container direction="column" spacing={2}>
-                            <Grid item xs={12}>
-                              <Box sx={{ px: 2, pt: 0.25 }}>
-                                <TextField
-                                  id="outlined-select-currency-native"
-                                  select
-                                  fullWidth
-                                  value={value}
-                                  onChange={handleChange}
-                                  SelectProps={{
-                                    native: true
-                                  }}
-                                >
-                                  {status.map((option) => (
-                                    <option key={option.value} value={option.value}>
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </TextField>
-                              </Box>
-                            </Grid>
-                            <Grid item xs={12} p={0}>
-                              <Divider sx={{ my: 0 }} />
-                            </Grid>
-                          </Grid>
-                          <NotificationList />
-                        </PerfectScrollbar>
-                      </Grid>
-                    </Grid>
-                    <CardActions sx={{ p: 1.25, justifyContent: 'center' }}>
-                      <Button size="small" disableElevation>
-                        View All
-                      </Button>
-                    </CardActions>
-                  </MainCard>
-                )}
-              </Paper>
-            </Transitions>
-          </ClickAwayListener>
-        )}
-      </Popper>
+      </Link>
     </>
   );
 };

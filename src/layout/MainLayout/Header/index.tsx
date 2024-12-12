@@ -81,11 +81,11 @@ const Header = () => {
       </Box> */}
 
       {/* notification */}
-      <NotificationSection />
+      
 
       {/* full sceen toggler */}
       <Box>
-        <FullScreenSection />
+        <NotificationSection />
       </Box>
 
       {/* profile */}
@@ -94,7 +94,7 @@ const Header = () => {
       {/* mobile header */}
       {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
         <MobileSection />
-      </Box> */}
+      // </Box> */}
     </>
   );
 };

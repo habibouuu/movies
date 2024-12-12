@@ -39,23 +39,23 @@ const application: NavItemType = {
   type: 'group',
   children: [
     {
-      id: 'comedy',
-      title: 'comedy',
+      id: 'mov-comedy',
+      title: 'Comedy',
       type: 'item',
       icon: icons.IconLayoutKanban,
       url: '/movies/comedy',
       breadcrumbs: false
     },
     {
-      id: 'action',
-      title: <FormattedMessage id="action" />,
+      id: 'mov-action',
+      title: <FormattedMessage id="Action" />,
       type: 'item',
       icon: icons.IconMail,
       url: '/movies/action'
     },
     {
-      id: 'drama',
-      title: <FormattedMessage id="drama" />,
+      id: 'mov-drama',
+      title: <FormattedMessage id="Drama" />,
       type: 'item',
       url: '/movies/drama',
       icon: icons.IconCalendar

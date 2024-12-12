@@ -37,21 +37,21 @@ const forms: NavItemType = {
   type: 'group',
   children: [
     {
-      id: 'comedy',
+      id: 'tv-comedy',
       title: <FormattedMessage id="Comedy" />,
       type: 'item',
       url: '/tv/comedy',
       icon: icons.IconMapPin
     },
     {
-      id: 'action',
+      id: 'tv-action',
       title: <FormattedMessage id="Action" />,
       type: 'item',
       url: '/tv/action',
       icon: icons.IconClipboardCheck
     },
     {
-      id: 'drama',
+      id: 'tv-drama',
       title: <FormattedMessage id="Drama" />,
       type: 'item',
       url: '/tv/drama',
