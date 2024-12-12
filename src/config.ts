@@ -15,12 +15,12 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['300', '400', '500', '700']
 
 const config: ConfigProps = {
   menuOrientation: MenuOrientation.VERTICAL,
-  miniDrawer: false,
+  miniDrawer: true,
   fontFamily: roboto.style.fontFamily,
   borderRadius: 8,
   outlinedFilled: true,
-  mode: ThemeMode.LIGHT,
-  presetColor: 'default',
+  mode: ThemeMode.DARK,
+  presetColor: 'theme3',
   i18n: 'en',
   themeDirection: ThemeDirection.LTR,
   container: false

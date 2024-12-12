@@ -87,9 +87,9 @@ export const Menu = () => {
 
   let menuList: NavItemType = {
     ...menu,
-    title: <FormattedMessage id={`${menu.title}`} />,
+    title: <FormattedMessage id={`j`} />,
     // @ts-ignore
-    icon: icons[menu.icon],
+    icon: icons[''],
     children: ChildrenList
   };
 

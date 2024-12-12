@@ -36,8 +36,8 @@ const MainContentStyled = styled('main', {
       duration: theme.transitions.duration.shorter + 200
     }),
     [theme.breakpoints.up('md')]: {
-      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? -(drawerWidth - 72) : 20,
-      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: menuOrientation === MenuOrientation.VERTICAL ? 20 : 20,
+      width: `100%`,
       marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88
     }
   }),
@@ -48,7 +48,7 @@ const MainContentStyled = styled('main', {
     }),
     marginLeft: menuOrientation === MenuOrientation.HORIZONTAL ? 20 : 0,
     marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88,
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `100%`,
     [theme.breakpoints.up('md')]: {
       marginTop: menuOrientation === MenuOrientation.HORIZONTAL ? 135 : 88
     }
@@ -58,7 +58,7 @@ const MainContentStyled = styled('main', {
     padding: 16,
     marginTop: 88,
     ...(!open && {
-      width: `calc(100% - ${drawerWidth}px)`
+      width: `100%`
     })
   },
   [theme.breakpoints.down('sm')]: {

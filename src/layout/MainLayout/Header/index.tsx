@@ -66,25 +66,25 @@ const Header = () => {
       </Box>
 
       {/* header search */}
-      <SearchSection />
+      {/* <SearchSection /> */}
       <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ flexGrow: 1 }} />
 
       {/* mega-menu */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+      {/* <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <MegaMenuSection />
-      </Box>
+      </Box> */}
 
       {/* live customization & localization */}
-      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+      {/* <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
         <LocalizationSection />
-      </Box>
+      </Box> */}
 
       {/* notification */}
       <NotificationSection />
 
       {/* full sceen toggler */}
-      <Box sx={{ display: { xs: 'none', lg: 'block' } }}>
+      <Box>
         <FullScreenSection />
       </Box>
 
@@ -92,9 +92,9 @@ const Header = () => {
       <ProfileSection />
 
       {/* mobile header */}
-      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+      {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
         <MobileSection />
-      </Box>
+      </Box> */}
     </>
   );
 };

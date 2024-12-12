@@ -83,21 +83,21 @@ const FrameworkSection = () => {
   const theme = useTheme();
 
   const settings: Settings = {
-    dots: true,
+    dots: false,
     className: 'center',
     infinite: true,
     centerPadding: '60px',
     slidesToShow: 7,
     slidesToScroll: 7,
     speed: 500,
-    swipeToSlide: true,
+    swipeToSlide: false,
     responsive: [
       {
         breakpoint: 1534,
         settings: {
           slidesToShow: 6,
           slidesToScroll: 6,
-          dots: true
+          dots: false
         }
       },
       {
@@ -105,7 +105,7 @@ const FrameworkSection = () => {
         settings: {
           slidesToShow: 4,
           slidesToScroll: 4,
-          dots: true
+          dots: false
         }
       },
       {
@@ -113,7 +113,7 @@ const FrameworkSection = () => {
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
-          dots: true
+          dots: false
         }
       },
       {
@@ -121,7 +121,7 @@ const FrameworkSection = () => {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
-          dots: true
+          dots: false
         }
       }
     ]
@@ -129,19 +129,6 @@ const FrameworkSection = () => {
 
   return (
     <>
-      <Container sx={{ mb: 6 }}>
-        <Stack spacing={0.25} alignItems="center">
-          <Typography variant="h2" align="center" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
-            Berry is now available in multiple frameworks*
-          </Typography>
-          <Typography variant="body2" align="center" sx={{ pt: 1 }}>
-            Each framework is sold separately on different platforms. Click to{' '}
-            <Link href="https://codedthemes.gitbook.io/berry/berry-eco-system" target="_blank" underline="hover">
-              learn more.
-            </Link>
-          </Typography>
-        </Stack>
-      </Container>
       <Box
         sx={{
           overflow: 'hidden',
@@ -153,7 +140,6 @@ const FrameworkSection = () => {
           },
           '& .slick-dots': {
             position: 'initial',
-            mt: 4,
             '& li button:before': {
               fontSize: '0.75rem'
             },
@@ -164,7 +150,10 @@ const FrameworkSection = () => {
           }
         }}
       >
-        <Slider {...settings}>
+        <Typography variant="h2" sx={{ ml: 2 }}>
+          Title
+          </Typography>
+        <Slider  {...settings}>
           {frameworks.map((item, index) => (
             <Badge
               key={index}

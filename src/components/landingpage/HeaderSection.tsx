@@ -34,53 +34,53 @@ const BgLight = '/assets/images/landing/bg-hero-block-light.png';
 import { ThemeDirection, ThemeMode } from 'types/config';
 
 // styles
-const HeaderImage = styled('img')(({ theme }) => ({
-  maxWidth: '100%',
-  borderRadius: 20,
-  transform: 'scale(1.7)',
-  transformOrigin: theme.direction === 'rtl' ? '100% 50%' : '0 50%',
-  [theme.breakpoints.down('xl')]: {
-    transform: 'scale(1.5)'
-  },
-  [theme.breakpoints.down('lg')]: {
-    transform: 'scale(1.2)'
-  }
-}));
+// const HeaderImage = styled('img')(({ theme }) => ({
+//   maxWidth: '100%',
+//   borderRadius: 20,
+//   transform: 'scale(1.7)',
+//   transformOrigin: theme.direction === 'rtl' ? '100% 50%' : '0 50%',
+//   [theme.breakpoints.down('xl')]: {
+//     transform: 'scale(1.5)'
+//   },
+//   [theme.breakpoints.down('lg')]: {
+//     transform: 'scale(1.2)'
+//   }
+// }));
 
-const HeaderAnimationImage = styled('img')({
-  maxWidth: '100%',
-  filter: 'drop-shadow(0px 0px 50px rgb(33 150 243 / 30%))'
-});
+// const HeaderAnimationImage = styled('img')({
+//   maxWidth: '100%',
+//   filter: 'drop-shadow(0px 0px 50px rgb(33 150 243 / 30%))'
+// });
 
 // ==============================|| LANDING - HEADER PAGE ||============================== //
 
 const HeaderSection = () => {
-  const { mode, themeDirection } = useConfig();
+  // const { mode, themeDirection } = useConfig();
 
   const headerSX = { fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem', lg: '3.5rem' } };
 
-  const HeaderAnimationImagememo = useMemo(
-    () => (
-      <HeaderAnimationImage
-        src={mode === ThemeMode.DARK ? BgDark : BgLight}
-        alt="Berry"
-        sx={{
-          display: { xs: 'none', md: 'flex' },
-          position: 'absolute',
-          filter: 'none',
-          bottom: { md: 0 },
-          right: 0,
-          width: '50%',
-          transformOrigin: '50% 50%',
-          transform: themeDirection === ThemeDirection.RTL ? 'rotateY(180deg)' : 'rotateY(0deg)'
-        }}
-      />
-    ),
-    [themeDirection, mode]
-  );
+  // const HeaderAnimationImagememo = useMemo(
+  //   () => (
+  //     <HeaderAnimationImage
+  //       src={mode === ThemeMode.DARK ? BgDark : BgLight}
+  //       alt="Berry"
+  //       sx={{
+  //         display: { xs: 'none', md: 'flex' },
+  //         position: 'absolute',
+  //         filter: 'none',
+  //         bottom: { md: 0 },
+  //         right: 0,
+  //         width: '50%',
+  //         transformOrigin: '50% 50%',
+  //         transform: themeDirection === ThemeDirection.RTL ? 'rotateY(180deg)' : 'rotateY(0deg)'
+  //       }}
+  //     />
+  //   ),
+  //   [themeDirection, mode]
+  // );
 
   return (
-    <Container sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <Container sx={{ height: '60vh',display: 'flex', justifyContent: 'center', backgroundColor: "red" , alignItems: 'center' }}>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: { xs: 10, sm: 6, md: 18.75 }, mb: { xs: 2.5, md: 10 } }}>
         <Grid item xs={12} md={5}>
           <Grid container spacing={6}>
@@ -146,7 +146,7 @@ const HeaderSection = () => {
                 </Grid>
               </motion.div>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <motion.div
                 initial={{ opacity: 0, translateY: 550 }}
                 animate={{ opacity: 1, translateY: 0 }}
@@ -161,10 +161,10 @@ const HeaderSection = () => {
                   />
                 </Stack>
               </motion.div>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Grid>
-        <Grid item xs={12} md={7} sx={{ display: { xs: 'none', md: 'flex' } }}>
+        {/* <Grid item xs={12} md={7} sx={{ display: { xs: 'none', md: 'flex' } }}>
           <Box sx={{ position: 'relative', mt: 8.75, zIndex: 9 }}>
             <HeaderImage src={dashboard} alt="Berry" />
             <Box
@@ -204,7 +204,7 @@ const HeaderSection = () => {
             </Box>
           </Box>
           {HeaderAnimationImagememo}
-        </Grid>
+        </Grid> */}
       </Grid>
     </Container>
   );

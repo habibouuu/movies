@@ -76,8 +76,8 @@ const Sidebar = () => {
   }, [downMD, drawerOpen, menuOrientation]);
 
   return (
-    <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { xs: 'auto', md: drawerWidth } }} aria-label="mailbox folders">
-      {downMD || (miniDrawer && drawerOpen) ? (
+    <Box component="nav" sx={{ flexShrink: { md: 0 }, width: { xs: 'auto', md: 'auto' } }} aria-label="mailbox folders">
+      {/* {downMD || (miniDrawer && drawerOpen) ? ( */}
         <Drawer
           variant={downMD ? 'temporary' : 'persistent'}
           anchor="left"
@@ -99,12 +99,7 @@ const Sidebar = () => {
           {downMD && logo}
           {drawer}
         </Drawer>
-      ) : (
-        <MiniDrawerStyled variant="permanent" open={drawerOpen}>
-          {logo}
-          {drawer}
-        </MiniDrawerStyled>
-      )}
+     
     </Box>
   );
 };
