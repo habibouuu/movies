@@ -15,24 +15,24 @@ const icons = {
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
 
 const dashboard: NavItemType = {
-  id: 'dashboard',
-  title: <FormattedMessage id="dashboard" />,
+  id: 'home',
+  title: <FormattedMessage id="home" />,
   icon: icons.IconDashboard,
   type: 'group',
   children: [
     {
-      id: 'default',
-      title: <FormattedMessage id="default" />,
+      id: 'trending',
+      title: <FormattedMessage id="trending" />,
       type: 'item',
-      url: '/dashboard/default',
+      url: '/trending',
       icon: icons.IconDashboard,
       breadcrumbs: false
     },
     {
-      id: 'analytics',
-      title: <FormattedMessage id="analytics" />,
+      id: "what's new",
+      title: <FormattedMessage id="what's new" />,
       type: 'item',
-      url: '/dashboard/analytics',
+      url: '/whatsnew',
       icon: icons.IconDeviceAnalytics,
       breadcrumbs: false
     }

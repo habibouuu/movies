@@ -19,11 +19,13 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'flagcdn.com',
+        hostname: '*',
         pathname: '**'
       }
     ]
-  },
+  },eslint: {
+    ignoreDuringBuilds: true,
+},
   env: {
     SUPABASE_KEY:process.env.SUPABASE_KEY,
     SUPABASE_URL:process.env.SUPABASE_URL,

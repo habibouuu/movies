@@ -33,31 +33,31 @@ const icons = {
 // ==============================|| MENU ITEMS - APPLICATION ||============================== //
 
 const application: NavItemType = {
-  id: 'application',
-  title: <FormattedMessage id="application" />,
+  id: 'movies',
+  title: <FormattedMessage id="movies" />,
   icon: icons.IconApps,
   type: 'group',
   children: [
     {
-      id: 'kanban',
-      title: 'Kanban',
+      id: 'comedy',
+      title: 'comedy',
       type: 'item',
       icon: icons.IconLayoutKanban,
-      url: '/apps/kanban/board',
+      url: '/movies/comedy',
       breadcrumbs: false
     },
     {
-      id: 'mail',
-      title: <FormattedMessage id="mail" />,
+      id: 'action',
+      title: <FormattedMessage id="action" />,
       type: 'item',
       icon: icons.IconMail,
-      url: '/apps/mail'
+      url: '/movies/action'
     },
     {
-      id: 'calendar',
-      title: <FormattedMessage id="calendar" />,
+      id: 'drama',
+      title: <FormattedMessage id="drama" />,
       type: 'item',
-      url: '/apps/calendar',
+      url: '/movies/drama',
       icon: icons.IconCalendar
     },
     

@@ -38,7 +38,7 @@
     "@tabler/icons-react": "^2.47.0",
     "amazon-cognito-identity-js": "^6.3.7",
     "apexcharts": "^3.46.0",
-    "axios": "^1.6.7",
+    "axios": "^1.7.9",
     "chance": "^1.1.11",
     "clsx": "^2.1.0",
     "csstype": "^3.1.3",

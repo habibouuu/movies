@@ -31,30 +31,30 @@ const icons = {
 // ==============================|| UI FORMS MENU ITEMS ||============================== //
 
 const forms: NavItemType = {
-  id: 'ui-forms',
-  title: <FormattedMessage id="forms" />,
+  id: 'tv-shows',
+  title: <FormattedMessage id="tv-shows" />,
   icon: icons.IconPictureInPicture,
   type: 'group',
   children: [
     {
-      id: 'map',
-      title: <FormattedMessage id="map" />,
+      id: 'comedy',
+      title: <FormattedMessage id="Comedy" />,
       type: 'item',
-      icon: icons.IconMapPin,
-      url: '/forms/map'
+      url: '/tv/comedy',
+      icon: icons.IconMapPin
     },
     {
-      id: 'forms-validation',
-      title: <FormattedMessage id="forms-validation" />,
+      id: 'action',
+      title: <FormattedMessage id="Action" />,
       type: 'item',
-      url: '/forms/forms-validation',
+      url: '/tv/action',
       icon: icons.IconClipboardCheck
     },
     {
-      id: 'forms-wizard',
-      title: <FormattedMessage id="forms-wizard" />,
+      id: 'drama',
+      title: <FormattedMessage id="Drama" />,
       type: 'item',
-      url: '/forms/forms-wizard',
+      url: '/tv/drama',
       icon: icons.IconStairsUp
     }
   ]

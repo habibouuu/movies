@@ -9,8 +9,8 @@ import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 // ==============================|| MODAL PAGE ||============================== //
 
 const Modal = () => (
-  <MainCard title="Simple Modal" secondary={<SecondaryAction link="https://next.material-ui.com/components/modal/" />}>
-    <ServerModal />
+  <MainCard title="Simple Modal">
+    {/* <ServerModal /> */}
     <SimpleModal />
   </MainCard>
 );

@@ -79,7 +79,7 @@ const Landing = () => {
       {/* <Box sx={{ py: 12.5, bgcolor: theme.palette.mode === ThemeMode.DARK ? 'background.default' : 'dark.900', pb: 0 }}>
         <FooterSection />
       </Box> */}
-      <Customization />
+      {/* <Customization /> */}
     </>
   );
 };
