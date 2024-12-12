@@ -1,13 +1,12 @@
 // project import
-import MinimalLayout from 'layout/MinimalLayout';
 import Landing from 'views/landing';
-
+import DashboardLayout from 'layout/MainLayout';
 // ==============================|| HOME PAGE ||============================== //
 
 export default function HomePage() {
   return (
-    <MinimalLayout>
+    <DashboardLayout>
       <Landing />
-    </MinimalLayout>
+    </DashboardLayout>
   );
 }
