@@ -20,7 +20,7 @@ const config: ConfigProps = {
   borderRadius: 8,
   outlinedFilled: true,
   mode: ThemeMode.DARK,
-  presetColor: 'theme4',
+  presetColor: 'theme1',
   i18n: 'en',
   themeDirection: ThemeDirection.LTR,
   container: false

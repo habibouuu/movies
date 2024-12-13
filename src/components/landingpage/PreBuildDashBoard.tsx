@@ -120,19 +120,20 @@ interface ItemProps {
   title: string;
   caption?: string;
   image: string;
-  link: string;
+ 
 }
 
-const Items = ({ title, caption, image, link }: ItemProps) => {
+const Items = ({ title, caption, image}: ItemProps) => {
   return (
     <>
       <Images
         src={image}
         alt="dashboard"
         sx={{
-          width: { xs: '100%', xl: 743 },
+          // width: { xs: '100px', xl: 743 },
           objectFit: 'contain',
-          direction: 'initial'
+          direction: 'initial',
+          height:'60%'
         }}
       />
       <Stack spacing={1} sx={{ pt: 1 }}>
@@ -141,9 +142,9 @@ const Items = ({ title, caption, image, link }: ItemProps) => {
           spacing={1}
           alignItems="center"
           justifyContent="center"
-          component={Link}
-          href={link}
-          target="_blank"
+          // component={Link}
+          // href={link}
+          // target="_blank"
           sx={{ textDecoration: 'none' }}
         >
           <Typography variant="h3" sx={{ fontWeight: 500 }}>
@@ -160,8 +161,28 @@ const Items = ({ title, caption, image, link }: ItemProps) => {
     </>
   );
 };
-
-const PreBuildDashBoard = () => {
+type movi = 
+          {
+            "adult": boolean,
+            "backdrop_path": string,
+            "genre_ids": number[],
+            "id": number,
+            "origin_country": string[],
+            "original_language": string,
+            "original_name": string,
+            "overview": string,
+            "popularity": number,
+            "poster_path":string,
+            "first_air_date": Date,
+            "name": string,
+            "vote_average": number,
+            "vote_count": number,
+            "original_title": string,
+            "release_date": Date,
+            "title": string,
+            "video": boolean
+          };
+const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -172,12 +193,7 @@ const PreBuildDashBoard = () => {
           <Grid container spacing={1.5}>
             <Grid item xs={12}>
               <Typography variant="h2" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>
-                Explore Concenputal Apps
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h4" sx={{ fontWeight: 400 }} align="center">
-                Berry has conceptul working apps like Chat, Inbox, E-commerce, Invoice, Kanban, and Calendar
+                {title}
               </Typography>
             </Grid>
           </Grid>
@@ -195,7 +211,7 @@ const PreBuildDashBoard = () => {
               showThumbs={false}
               showIndicators={false}
               centerMode={downMD ? false : true}
-              centerSlidePercentage={50}
+              centerSlidePercentage={25}
               infiniteLoop={true}
               autoFocus={true}
               emulateTouch={true}
@@ -209,32 +225,15 @@ const PreBuildDashBoard = () => {
                 hasNext && <SampleNextArrow onClickHandler={onClickHandler} hasNext={hasNext} label={label} />
               }
             >
-              <Items
-                title="Mail/Message App"
-                image={theme.palette.mode === ThemeMode.DARK ? SliderDark5 : SliderLight5}
-                link="/apps/mail"
+              {movies && movies.map((elem,index)=>{
+                return <Items 
+                title={elem.title}
+                image={'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+elem.poster_path}
+              
               />
-              <Items title="Chat App" image={theme.palette.mode === ThemeMode.DARK ? SliderDark3 : SliderLight3} link="/apps/chat" />
-              <Items
-                title="Kanban App"
-                image={theme.palette.mode === ThemeMode.DARK ? SliderDark4 : SliderLight4}
-                link="/apps/kanban/board"
-              />
-              <Items
-                title="Calendar App"
-                image={theme.palette.mode === ThemeMode.DARK ? SliderDark2 : SliderLight2}
-                link="/apps/calendar"
-              />
-              <Items
-                title="Ecommerce App"
-                image={theme.palette.mode === ThemeMode.DARK ? SliderDark1 : SliderLight1}
-                link="/apps/e-commerce/products"
-              />
-              <Items
-                title="Social Profile"
-                image={theme.palette.mode === ThemeMode.DARK ? SliderDark6 : SliderLight6}
-                link="/apps/user/social-profile/posts"
-              />
+              })}
+              
+              
             </Carousel>
           </Box>
         </Grid>

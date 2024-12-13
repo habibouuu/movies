@@ -1,6 +1,80 @@
 
 import axios from 'axios';
+async function getTrendingMov(){
+    let data
+    let movie
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`,
+        headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+  }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            console.log(res.data)
+            data = res.data.results
+        })
+        .catch(err => console.error(err));
+       
+        return data
+        
 
+
+}
+async function getTopratedMov(){
+    let data
+    let movie
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`,
+        headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+  }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            console.log(res.data)
+            data = res.data.results
+        })
+        .catch(err => console.error(err));
+       
+        return data
+        
+
+
+}
+async function getNowplayingMov(){
+    let data
+    let movie
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1`,
+        headers: {
+    accept: 'application/json',
+    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+  }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            console.log(res.data)
+            data = res.data.results
+        })
+        .catch(err => console.error(err));
+       
+        return data
+        
+
+
+}
 async function getComedyMov(page){
     let data
     const options = {
@@ -107,6 +181,9 @@ async function searchMovies(page,query){
 
 
 export default {
+    getTrendingMov,
+    getTopratedMov,
+    getNowplayingMov,
     getComedyMov,
     getDramaMov,
     getActionMov,

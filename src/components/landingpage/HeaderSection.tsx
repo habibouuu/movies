@@ -1,3 +1,4 @@
+"use client"
 import { useMemo } from 'react';
 
 // material-ui
@@ -53,51 +54,51 @@ import { ThemeDirection, ThemeMode } from 'types/config';
 // });
 
 // ==============================|| LANDING - HEADER PAGE ||============================== //
-
-const HeaderSection = () => {
+type movi = 
+          {
+            "adult": boolean,
+            "backdrop_path": string,
+            "genre_ids": number[],
+            "id": number,
+            "origin_country": string[],
+            "original_language": string,
+            "original_name": string,
+            "overview": string,
+            "popularity": number,
+            "poster_path":string,
+            "first_air_date": Date,
+            "name": string,
+            "vote_average": number,
+            "vote_count": number,
+            "original_title": string,
+            "release_date": Date,
+            "title": string,
+            "video": boolean
+          };
+const HeaderSection = ({headMovie}:{headMovie:movi|undefined}) => {
   // const { mode, themeDirection } = useConfig();
 
   const headerSX = { fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem', lg: '3.5rem' } };
 
-  // const HeaderAnimationImagememo = useMemo(
-  //   () => (
-  //     <HeaderAnimationImage
-  //       src={mode === ThemeMode.DARK ? BgDark : BgLight}
-  //       alt="Berry"
-  //       sx={{
-  //         display: { xs: 'none', md: 'flex' },
-  //         position: 'absolute',
-  //         filter: 'none',
-  //         bottom: { md: 0 },
-  //         right: 0,
-  //         width: '50%',
-  //         transformOrigin: '50% 50%',
-  //         transform: themeDirection === ThemeDirection.RTL ? 'rotateY(180deg)' : 'rotateY(0deg)'
-  //       }}
-  //     />
-  //   ),
-  //   [themeDirection, mode]
-  // );
 
   return (
-    <Container sx={{ height: '60vh',display: 'flex', justifyContent: 'center', backgroundColor: "red" , alignItems: 'center' }}>
+    <Container sx={{ height: '60vh', width:'95vw',display: 'flex', justifyContent: 'center',backgroundSize:'cover', backgroundImage: headMovie? `url('https://image.tmdb.org/t/p/w600_and_h900_bestv2${headMovie.backdrop_path}')`:'none' , alignItems: 'center' }}>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: { xs: 10, sm: 6, md: 18.75 }, mb: { xs: 2.5, md: 10 } }}>
-        <Grid item xs={12} md={5}>
-          <Grid container spacing={6}>
+        <Grid item xs={12} md={5} sx={{background:'rgba(0, 0, 0, 0.55)', p:4, borderRadius:'10px'}}>
+          <Grid container spacing={6} >
             <Grid item xs={12}>
               <motion.div
                 initial={{ opacity: 0, translateY: 550 }}
                 animate={{ opacity: 1, translateY: 0 }}
                 transition={{ type: 'spring', stiffness: 150, damping: 30 }}
               >
-                <Stack spacing={1}>
-                  <Typography textAlign={{ xs: 'center', md: 'left' }} variant="h1" sx={headerSX}>
-                    Use Berry to Power Your Next
-                  </Typography>
+                
+                
                   <Typography textAlign={{ xs: 'center', md: 'left' }} variant="h1" color="primary" sx={headerSX}>
-                    React Project
+                   {headMovie? headMovie.title : "Title"}
                   </Typography>
-                </Stack>
+                  {/* <Stack spacing={1}>
+                </Stack> */}
               </motion.div>
             </Grid>
             <Grid item xs={12} sx={{ mt: -2.5, textAlign: { xs: 'center', md: 'left' } }}>
@@ -110,9 +111,9 @@ const HeaderSection = () => {
                   textAlign={{ xs: 'center', md: 'left' }}
                   color="text.primary"
                   variant="body1"
-                  sx={{ fontSize: { xs: '1rem', md: '1.125rem' } }}
+                  sx={{ fontSize: { xs: '18px', md:'22px', lg: '26px'}, }}
                 >
-                  Berry is React based Dashboard template which helps you to build faster and beautiful web applications.
+                 {headMovie? headMovie.overview.slice(0,80)+'...' : "Description"}
                 </Typography>
               </motion.div>
             </Grid>
@@ -131,16 +132,16 @@ const HeaderSection = () => {
                         target="_blank"
                         size="large"
                         variant="contained"
-                        color="secondary"
+                        color="error"
                         startIcon={<PlayArrowIcon />}
                       >
-                        Live Preview
+                        View
                       </Button>
                     </AnimateButton>
                   </Grid>
                   <Grid item>
-                    <Button component={Link} href="https://links.codedthemes.com/hsqll" target="_blank" size="large">
-                      Purchase Now
+                    <Button component={Link} href="https://links.codedthemes.com/hsqll" variant="contained" target="_blank" color='secondary' size="large">
+                      Add to list
                     </Button>
                   </Grid>
                 </Grid>

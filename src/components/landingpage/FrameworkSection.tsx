@@ -27,6 +27,7 @@ const Flask = '/assets/images/landing/frameworks/flask.svg';
 
 // types
 import { ThemeMode } from 'types/config';
+import MovieBox from 'components/app/MovieBox';
 
 export const frameworks = [
   {
@@ -78,8 +79,28 @@ export const frameworks = [
 ];
 
 // =============================|| LANDING - FRAMWORK SECTION ||============================= //
-
-const FrameworkSection = () => {
+type movi = 
+          {
+            "adult": boolean,
+            "backdrop_path": string,
+            "genre_ids": number[],
+            "id": number,
+            "origin_country": string[],
+            "original_language": string,
+            "original_name": string,
+            "overview": string,
+            "popularity": number,
+            "poster_path":string,
+            "first_air_date": Date,
+            "name": string,
+            "vote_average": number,
+            "vote_count": number,
+            "original_title": string,
+            "release_date": Date,
+            "title": string,
+            "video": boolean
+          };
+const FrameworkSection = ({title, movies}:{title:string, movies:movi[]}) => {
   const theme = useTheme();
 
   const settings: Settings = {
@@ -150,74 +171,13 @@ const FrameworkSection = () => {
           }
         }}
       >
-        <Typography variant="h2" sx={{ ml: 2 }}>
-          Title
+        <Typography variant="h2" sx={{ ml: 4 }}>
+          {title}
           </Typography>
-        <Slider  {...settings}>
-          {frameworks.map((item, index) => (
-            <Badge
-              key={index}
-              color="primary"
-              badgeContent={item.isUpcoming ? 'Coming Soon' : 0}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left'
-              }}
-              sx={{
-                '& .MuiBadge-badge': {
-                  left: '50%',
-                  transform: 'scale(1) translate(-50%, 0)',
-                  ...(item.isUpcoming && {
-                    bgcolor: 'background.paper',
-                    color: 'primary.main',
-                    border: '1px solid',
-                    borderColor: 'primary.main'
-                  })
-                }
-              }}
-            >
-              <SubCard
-                content={false}
-                sx={{
-                  width: '180px !important',
-                  height: 140,
-                  border: 'none',
-                  display: 'inline-flex !important',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  my: 1,
-                  borderRadius: 2,
-                  cursor: 'pointer',
-                  bgcolor: theme.palette.mode === ThemeMode.DARK ? 'dark.800' : 'grey.100',
-                  '&:hover': {
-                    bgcolor: theme.palette.mode === ThemeMode.DARK ? 'primary.main' : 'primary.light'
-                  }
-                }}
-              >
-                <Box
-                  component={Link}
-                  href={item.link}
-                  target="_blank"
-                  underline="none"
-                  sx={{
-                    display: 'flex',
-                    flex: 1,
-                    height: '100%',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Stack spacing={2} alignItems="center">
-                    <Stack sx={{ width: 'auto', height: 48 }} alignItems="center" justifyContent="center">
-                      <CardMedia alt={item.title} src={item.logo} component="img" />
-                    </Stack>
-                    <Typography variant="h4" sx={{ width: 'max-content' }}>
-                      {item.title}
-                    </Typography>
-                  </Stack>
-                </Box>
-              </SubCard>
-            </Badge>
+          <Box sx={{p:3}}/>
+        <Slider {...settings}>
+          {movies.map((item:movi, index:number) => (
+            <MovieBox key={index} item={item}/>
           ))}
         </Slider>
       </Box>
