@@ -167,7 +167,7 @@ const ProfileSection = ({user}:any) => {
                         <Stack direction="row" spacing={0.5} alignItems="center">
                           <Typography variant="h4">Good Morning,</Typography>
                           <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                            {user?.user_metadata.first_name.charAt(0).toUpperCase()+""+user?.user_metadata.first_name.split('').slice(1,user?.user_metadata.first_name.length).join('')}
+                            {"  "+user?.user_metadata.first_name.charAt(0).toUpperCase()+""+user?.user_metadata.first_name.split('').slice(1,user?.user_metadata.first_name.length).join('')}
                           </Typography>
                        
                    

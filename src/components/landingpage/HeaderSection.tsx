@@ -215,14 +215,14 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
       return (
         <Grid container justifyContent="flex-start">
           {isLoggedIn?<>
-          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+          <Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
           <Box sx={{px:1}}/>
-          <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
+          <Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>
-          </>:<Button variant="contained" type="button" color='error' onClick={()=>router.push('/login')}>
+          </>:<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
             Login to save
           </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">

@@ -197,15 +197,15 @@ export default function UserMovieBox({ item, typ, setDD }: { item: movi, typ:str
       };
       return (
         <Grid container justifyContent="flex-start">
-          {typ=='watchlater'?<Button variant="contained" type="button" color='error' onClick={()=>handleRemoveWatch(item)}>
+          {typ=='watchlater'?<Button variant="contained" type="button" color='secondary' onClick={()=>handleRemoveWatch(item)}>
             Remove From Watch Later
-          </Button>:<Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+          </Button>:<Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
             Add to Watch Later
           </Button>}
           <Box sx={{px:1}}/>
-          {typ=='favorites'?<Button variant="contained" type="button" color='secondary' onClick={()=>handleRemoveFavorites(item)}>
+          {typ=='favorites'?<Button variant="contained" type="button" color='warning' onClick={()=>handleRemoveFavorites(item)}>
             Remove From Favorites
-          </Button>:<Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
+          </Button>:<Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
