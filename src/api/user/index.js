@@ -42,10 +42,6 @@ async function logout(){
 }
 
 async function signup(email, password, firstname, lastname){
-console.log(email)
-console.log(password)
-console.log(firstname)
-console.log(lastname)
     
 let { data, error } = await supabase.auth.signUp({
     email: email,

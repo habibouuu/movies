@@ -111,7 +111,7 @@ const JWTRegister = ({ ...others }) => {
             console.log(a)
             if (scriptedRef.current && a) {
               setStatus({ success: true });
-               setSession(a.session.access_token);
+              if(a.session) setSession(a.session.access_token);
               setSubmitting(false);
               dispatch(
                 openSnackbar({
