@@ -71,7 +71,7 @@ export default function page() {
           sx={{ width: { md: 250, lg: 434 }, ml: 2, px: 2 }}
         />
       </Box>
-      <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:3, flexWrap: 'wrap'}}>
+      <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:{xs:1, md: 3}, flexWrap: 'wrap'}}>
 
         {Movies.map((elem:any,index:number)=><MovieBox item ={elem}/>)}
         
