@@ -19,7 +19,7 @@ interface MainStyleProps {
 const MainContentStyled = styled('main', {
   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'borderRadius' && prop !== 'menuOrientation'
 })(({ theme, open, menuOrientation, borderRadius }: MainStyleProps) => ({
-  backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.dark[800] : theme.palette.grey[100],
+  backgroundColor: theme.palette.mode === ThemeMode.DARK ? theme.palette.dark[100] : theme.palette.grey[100],
   minWidth: '1%',
   width: '100%',
   minHeight: 'calc(100vh - 88px)',

@@ -40,7 +40,7 @@ const Login = () => {
               <AuthCardWrapper>
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                   <Grid item sx={{ mb: 3 }}>
-                    <Link href="#" aria-label="logo">
+                    <Link href="/" aria-label="logo">
                       <Logo />
                     </Link>
                   </Grid>

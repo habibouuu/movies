@@ -118,7 +118,7 @@ function getModalStyle() {
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-const HeaderSection = ({headMovie}:{headMovie:movi}) => {
+const HeaderSection = ({headMovie}:{headMovie:any}) => {
   const theme = useTheme();
 const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [modalStyle] = React.useState(getModalStyle);
@@ -235,7 +235,7 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
   
 
   return (
-    <Container sx={{ height: '60vh', width:'95vw',display: 'flex', justifyContent: 'center',backgroundSize:'cover', backgroundImage: headMovie? `url('https://image.tmdb.org/t/p/w600_and_h900_bestv2${headMovie.backdrop_path}')`:'none' , alignItems: 'center' }}>
+    <Container sx={{ height: '60vh', width:'100%',display: 'flex', justifyContent: 'center',backgroundSize:'cover', backgroundImage: headMovie? `url('https://image.tmdb.org/t/p/w600_and_h900_bestv2${headMovie.backdrop_path}')`:'none' , alignItems: 'center' }}>
       <Grid container justifyContent="space-between" alignItems="center" sx={{ mt: { xs: 10, sm: 6, md: 18.75 }, mb: { xs: 2.5, md: 10 } }}>
         <Grid item xs={12} md={5} sx={{background:'rgba(0, 0, 0, 0.55)', p:4, borderRadius:'10px'}}>
           <Grid container spacing={6} >

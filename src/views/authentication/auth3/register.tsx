@@ -35,7 +35,7 @@ const Register = () => {
               <AuthCardWrapper>
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                   <Grid item sx={{ mb: 3 }}>
-                    <Link href="#" aria-label="theme logo">
+                    <Link href="/" aria-label="theme logo">
                       <Logo />
                     </Link>
                   </Grid>

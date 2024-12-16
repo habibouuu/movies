@@ -83,7 +83,7 @@ const Landing = () => {
   },[])
   
   return loadingg?<CircularLoader/>:(
-    <Box sx={{  bgcolor: 'background.default' }}>
+    <Box >
       {/* 1. header and hero section */}
       <Box sx={{width:'100%'}}>
         {/* <AppBar /> */}
