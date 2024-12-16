@@ -1,30 +1,23 @@
 'use client';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+
 import Box from '@mui/material/Box';
 
 // project imports
-import Customization from 'layout/Customization';
-import AppBar from 'ui-component/extended/AppBar';
+
 import util from 'api/movies';
 import utils from 'api/tvshows';
 import {useState, useEffect} from 'react';
 import HeaderSection from 'components/landingpage/HeaderSection';
-import CardSection from 'components/landingpage/CardSection';
-import CustomizeSection from 'components/landingpage/CustomizeSection';
-import FeatureSection from 'components/landingpage/FeatureSection';
+
 import PreBuildDashBoard from 'components/landingpage/PreBuildDashBoard';
-import PeopleSection from 'components/landingpage/PeopleSection';
-import StartupProjectSection from 'components/landingpage/StartupProjectSection';
+
 import FrameworkSection from 'components/landingpage/FrameworkSection';
-import FooterSection from 'components/landingpage/FooterSection';
+
 
 // types
-import { ThemeMode } from 'types/config';
-import Loadable from 'ui-component/Loadable';
-import Loader from 'ui-component/Loader';
-import Loading from 'app/loading';
+
 import CircularLoader from 'ui-component/CircularLoader';
 
 // =============================|| LANDING MAIN ||============================= //

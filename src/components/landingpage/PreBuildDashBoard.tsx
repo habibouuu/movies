@@ -1,8 +1,6 @@
 
 'use client'
 import React from 'react';
-
-import CardMedia from '@mui/material/CardMedia';
 // import Container from '@mui/material/Container';
 import { useTheme } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -10,12 +8,10 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
 // project imports
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import SubCard from 'ui-component/cards/SubCard';
 // assets
 import CloseIcon from '@mui/icons-material/Close';
 import Grid from '@mui/material/Grid';
@@ -34,7 +30,7 @@ import useAuth from 'hooks/useAuth';
 import { Carousel } from 'react-responsive-carousel';
 
 // assets
-import { IconChevronRight, IconChevronLeft, IconLink } from '@tabler/icons-react';
+import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react';
 
 const Images = styled('img')({
   width: '100%',
@@ -180,10 +176,7 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
       setItem(undefined);
       setOpen(false);
     };
-    interface BodyProps extends CardProps {
-      modalStyle: React.CSSProperties;
-      handleClose: () => void;
-    }
+  
     const Items = ({elem, title, caption, image}: ItemProps) => {
       return (
         <>

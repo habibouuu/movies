@@ -1,8 +1,7 @@
 "use client"
-import { Box, Pagination, PaginationItem} from '@mui/material';
+import { Box, Pagination} from '@mui/material';
 import React, {useEffect, useState} from 'react';
 import util from 'api/userFunctions';
-import MovieBox from 'components/app/MovieBox';
 import UserMovieBox from 'components/app/UserMovieBox';
 
 export default function page() {

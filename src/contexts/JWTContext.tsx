@@ -4,7 +4,6 @@ import React, { createContext, useEffect, useReducer } from 'react';
 
 // third-party
 import { Chance } from 'chance';
-import { jwtDecode } from 'jwt-decode';
 import util from 'api/user'
 // reducer - state management
 import { LOGIN, LOGOUT } from 'store/actions';
@@ -12,11 +11,11 @@ import accountReducer from 'store/accountReducer';
 
 // project imports
 import Loader from 'ui-component/Loader';
-import axios from 'utils/axios';
+
 
 // types
 import { JWTContextType } from 'types/auth';
-import { InitialLoginContextProps, KeyedObject } from 'types';
+import { InitialLoginContextProps } from 'types';
 
 const chance = new Chance();
 
@@ -27,16 +26,6 @@ const initialState: InitialLoginContextProps = {
   user: null
 };
 
-const verifyToken: (st: string) => boolean = (serviceToken) => {
-  if (!serviceToken) {
-    return false;
-  }
-  const decoded: KeyedObject = jwtDecode(serviceToken);
-  /**
-   * Property 'exp' does not exist on type '<T = unknown>(token: string, options?: JwtDecodeOptions | undefined) => T'.
-   */
-  return decoded.exp > Date.now() / 1000;
-};
 
 const setSession = (serviceToken?: string | null) => {
   // const TIMESTAMP = Date.now();
@@ -63,7 +52,7 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
     
     const init = async () => {
       try {
-        const ex = window.localStorage.getItem('serviceToken')
+        // const ex = window.localStorage.getItem('serviceToken')
         
   //       let EXPIRE_DATE
   //       if(ex) EXPIRE_DATE = JSON.parse(ex).expiresOn;
@@ -72,8 +61,8 @@ export const JWTProvider = ({ children }: { children: React.ReactElement }) => {
   //   
   //   localStorage.removeItem('serviceToken');
   // } 
-        let serviceToken 
-        if(ex) serviceToken = JSON.parse(ex).serviceToken;
+        // let serviceToken 
+        // if(ex) serviceToken = JSON.parse(ex).serviceToken;
        const session:any = await util.getSession();
        
         if (session.access_token ) {

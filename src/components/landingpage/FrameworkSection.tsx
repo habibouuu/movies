@@ -1,18 +1,12 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
+
 import Box from '@mui/material/Box';
-import Badge from '@mui/material/Badge';
-import CardMedia from '@mui/material/CardMedia';
-// import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 // third-party
 import Slider, { Settings } from 'react-slick';
 
-// project imports
-import SubCard from 'ui-component/cards/SubCard';
+
 
 // assets
 const Angular = '/assets/images/landing/frameworks/angular.svg';
@@ -25,8 +19,6 @@ const Shopify = '/assets/images/landing/frameworks/shopify.svg';
 const FullStack = '/assets/images/landing/frameworks/full-stack.svg';
 const Flask = '/assets/images/landing/frameworks/flask.svg';
 
-// types
-import { ThemeMode } from 'types/config';
 import MovieBox from 'components/app/MovieBox';
 
 export const frameworks = [
@@ -101,7 +93,6 @@ type movi =
             "video": boolean
           };
 const FrameworkSection = ({title, movies}:{title:string, movies:movi[]}) => {
-  const theme = useTheme();
 
   const settings: Settings = {
     dots: false,

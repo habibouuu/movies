@@ -3,15 +3,12 @@ import { useTheme } from '@mui/material/styles';
 import { ThemeMode } from 'types/config';
 import Box from '@mui/material/Box';
 import CardMedia from '@mui/material/CardMedia';
-// import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
 import useAuth from 'hooks/useAuth';
 // project imports
@@ -73,12 +70,6 @@ export default function MovieBox({ item }: { item: movi }) {
     const handleClose = () => {
       setOpen(false);
     };
-    interface BodyProps extends CardProps {
-      modalStyle: React.CSSProperties;
-      handleClose: () => void;
-      item:movi;
-    }
-    
     const Body = React.forwardRef(({ modalStyle, item, open, setOpen, handleClose, handleOpen }: any, ref: React.Ref<HTMLDivElement>) => (
       <div ref={ref} tabIndex={-1}>
         {/**

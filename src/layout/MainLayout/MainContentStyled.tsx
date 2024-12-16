@@ -1,9 +1,6 @@
 // material-ui
 import { styled, Theme } from '@mui/material/styles';
 
-// project-import
-import { drawerWidth } from 'store/constant';
-
 // types
 import { MenuOrientation, ThemeMode } from 'types/config';
 

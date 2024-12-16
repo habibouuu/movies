@@ -1,5 +1,5 @@
 "use client"
-import { Box, Pagination, PaginationItem} from '@mui/material'
+import { Box, Pagination} from '@mui/material'
 import React, {useEffect, useState} from 'react'
 import util from 'api/tvshows'
 import MovieBox from 'components/app/MovieBox';

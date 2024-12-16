@@ -4,7 +4,6 @@ import { memo, useMemo } from 'react';
 import { Theme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Stack from '@mui/material/Stack';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 // third-party
@@ -14,8 +13,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import MenuCard from './MenuCard';
 import MenuList from '../MenuList';
 import LogoSection from '../LogoSection';
-import MiniDrawerStyled from './MiniDrawerStyled';
-import Chip from 'ui-component/extended/Chip';
 
 import useConfig from 'hooks/useConfig';
 import { drawerWidth } from 'store/constant';
@@ -33,7 +30,7 @@ const Sidebar = () => {
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
 
-  const { menuOrientation, miniDrawer } = useConfig();
+  const { menuOrientation } = useConfig();
 
   const logo = useMemo(
     () => (

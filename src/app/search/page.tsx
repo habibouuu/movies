@@ -1,15 +1,12 @@
 "use client"
-import { Box, Pagination, PaginationItem} from '@mui/material'
+import { Box, Pagination} from '@mui/material'
 import React, {useEffect, useState} from 'react'
 import util from 'api/movies'
 import MovieBox from 'components/app/MovieBox';
-import SearchSection from 'layout/MainLayout/Header/SearchSection';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import IconSearch from '@tabler/icons-react';
-import { useTheme } from '@mui/material/styles';
 export default function page() {
-      const theme = useTheme();
+     
     type movi = 
           {
             "adult": boolean,

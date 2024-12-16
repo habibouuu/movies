@@ -1,15 +1,9 @@
 "use client"
-import { useMemo } from 'react';
 
-// material-ui
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CardMedia from '@mui/material/CardMedia';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import util from 'api/userFunctions';
 import { openSnackbar } from 'store/slices/snackbar';
@@ -22,89 +16,23 @@ import AnimateButton from 'ui-component/extended/AnimateButton';
 import React from 'react';
 
 
-// import Container from '@mui/material/Container';
-import { useTheme } from '@mui/material/styles';
-
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import useAuth from 'hooks/useAuth';
-import SubCard from 'ui-component/cards/SubCard';
 // assets
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
 
-import useMediaQuery from '@mui/material/useMediaQuery';
 
-
-// third-party
-import { Carousel } from 'react-responsive-carousel';
-
-// assets
-import { IconChevronRight, IconChevronLeft, IconLink } from '@tabler/icons-react';
-
-import { DASHBOARD_PATH } from 'config';
-import useConfig from 'hooks/useConfig';
 
 // assets
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-const TechLight = '/assets/images/landing/tech-light.svg';
-const TechDark = '/assets/images/landing/tech-dark.svg';
-const dashboard = '/assets/images/landing/hero-dashboard.png';
-const widget1 = '/assets/images/landing/hero-widget-1.png';
-const widget2 = '/assets/images/landing/hero-widget-2.png';
-const BgDark = '/assets/images/landing/bg-hero-block-dark.png';
-const BgLight = '/assets/images/landing/bg-hero-block-light.png';
 
-// types
-import { ThemeDirection, ThemeMode } from 'types/config';
-
-// styles
-// const HeaderImage = styled('img')(({ theme }) => ({
-//   maxWidth: '100%',
-//   borderRadius: 20,
-//   transform: 'scale(1.7)',
-//   transformOrigin: theme.direction === 'rtl' ? '100% 50%' : '0 50%',
-//   [theme.breakpoints.down('xl')]: {
-//     transform: 'scale(1.5)'
-//   },
-//   [theme.breakpoints.down('lg')]: {
-//     transform: 'scale(1.2)'
-//   }
-// }));
-
-// const HeaderAnimationImage = styled('img')({
-//   maxWidth: '100%',
-//   filter: 'drop-shadow(0px 0px 50px rgb(33 150 243 / 30%))'
-// });
-
-// ==============================|| LANDING - HEADER PAGE ||============================== //
-type movi = 
-          {
-            "adult": boolean,
-            "backdrop_path": string,
-            "genre_ids": number[],
-            "id": number,
-            "origin_country": string[],
-            "original_language": string,
-            "original_name": string,
-            "overview": string,
-            "popularity": number,
-            "poster_path":string,
-            "first_air_date": Date,
-            "name": string,
-            "vote_average": number,
-            "vote_count": number,
-            "original_title": string,
-            "release_date": Date,
-            "title": string,
-            "video": boolean
-          };
 function rand() {
             return Math.round(Math.random() * 20) - 10;
           }
@@ -119,8 +47,7 @@ function getModalStyle() {
             };
           }
 const HeaderSection = ({headMovie}:{headMovie:any}) => {
-  const theme = useTheme();
-const downMD = useMediaQuery(theme.breakpoints.down('md'));
+
   const [modalStyle] = React.useState(getModalStyle);
   const router = useRouter()
     const {isLoggedIn} = useAuth();
@@ -132,10 +59,6 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
     const handleClose = () => {
       setOpen(false);
     };
-    interface BodyProps extends CardProps {
-      modalStyle: React.CSSProperties;
-      handleClose: () => void;
-    }
     
     const Body = React.forwardRef(({ modalStyle,  open, setOpen, handleClose, handleOpen }: any, ref: React.Ref<HTMLDivElement>) => (
       <div ref={ref} tabIndex={-1}>
