@@ -27,7 +27,8 @@ import MainCard from 'ui-component/cards/MainCard';
 import util from 'api/userFunctions';
 import { openSnackbar } from 'store/slices/snackbar';
 import { dispatch } from 'store';
-
+import { useRouter } from 'next/navigation';
+import useAuth from 'hooks/useAuth';
 
 // third-party
 import { Carousel } from 'react-responsive-carousel';
@@ -168,7 +169,8 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [item,setItem] = React.useState<movi|undefined>();
   const [modalStyle] = React.useState(getModalStyle);
-  
+  const {isLoggedIn} = useAuth();
+  const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -301,13 +303,15 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
       };
       return (
         <Grid container justifyContent="flex-start">
-          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+          {isLoggedIn?<><Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
           <Box sx={{px:1}}/>
           <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
             Add to Favorites
-          </Button>
+          </Button> </>:<Button variant="contained" type="button" color='error' onClick={()=>router.push('/login')}>
+            Login to save
+          </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>

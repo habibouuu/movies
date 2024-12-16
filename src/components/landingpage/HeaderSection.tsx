@@ -33,10 +33,11 @@ import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-
+import useAuth from 'hooks/useAuth';
 import SubCard from 'ui-component/cards/SubCard';
 // assets
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/navigation';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -121,8 +122,8 @@ const HeaderSection = ({headMovie}:{headMovie:movi}) => {
   const theme = useTheme();
 const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [modalStyle] = React.useState(getModalStyle);
-  
-    
+  const router = useRouter()
+    const {isLoggedIn} = useAuth();
   const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -213,6 +214,7 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
       };
       return (
         <Grid container justifyContent="flex-start">
+          {isLoggedIn?<>
           <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
@@ -220,6 +222,9 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
           <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>
+          </>:<Button variant="contained" type="button" color='error' onClick={()=>router.push('/login')}>
+            Login to save
+          </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>

@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
-
+import useAuth from 'hooks/useAuth';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import util from 'api/userFunctions';
@@ -24,6 +24,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SubCard from 'ui-component/cards/SubCard';
+import { useRouter } from 'next/navigation';
 // import Modal from 'views/forms/plugins/frm-modal';
 type movi = 
           {
@@ -62,7 +63,8 @@ type movi =
 export default function MovieBox({ item }: { item: movi }) {
   const theme = useTheme();
    const [modalStyle] = React.useState(getModalStyle);
-  
+   const router = useRouter();
+   const { isLoggedIn } = useAuth();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -154,13 +156,15 @@ export default function MovieBox({ item }: { item: movi }) {
       };
       return (
         <Grid container justifyContent="flex-start">
-          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+          {isLoggedIn?<><Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
           <Box sx={{px:1}}/>
           <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
             Add to Favorites
-          </Button>
+          </Button></>:<Button variant="contained" type="button" color='error' onClick={()=>router.push('/login')}>
+            Login to save
+          </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>

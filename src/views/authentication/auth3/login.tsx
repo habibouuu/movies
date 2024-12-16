@@ -17,7 +17,8 @@ import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthLogin from 'components/authentication/auth-forms/AuthLogin';
 import { useRouter } from 'next/navigation';
-
+import Image from 'next/image';
+import background from '../../../../public/assets/images/auth/loginbackground.jpg';
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
@@ -32,9 +33,10 @@ const Login = () => {
   return (
     <AuthWrapper1>
       <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
+        <Image src={background} style={{width:'100vw', height:'100vh', position:'absolute', zIndex:0}} alt=''/>
         <Grid item xs={12}>
           <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: 'calc(100vh - 68px)' }}>
-            <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
+            <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0, zIndex:10}}>
               <AuthCardWrapper>
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
                   <Grid item sx={{ mb: 3 }}>
@@ -79,7 +81,7 @@ const Login = () => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} sx={{ m: 3, mt: 1 }}>
+        <Grid item xs={12} sx={{ m: 3, mt: 1, zIndex:10 }}>
           <AuthFooter />
         </Grid>
       </Grid>

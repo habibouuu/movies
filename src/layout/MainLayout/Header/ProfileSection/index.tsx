@@ -39,20 +39,20 @@ import { ThemeMode } from 'types/config';
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons-react';
 import useConfig from 'hooks/useConfig';
 
-const User1 = '/assets/images/users/user-round.svg';
+const User1 = '';
 
 // ==============================|| PROFILE MENU ||============================== //
 
-const ProfileSection = () => {
+const ProfileSection = ({user}:any) => {
   const theme = useTheme();
   const { borderRadius } = useConfig();
   const navigate = useRouter();
-
+  console.log(user)
   const [sdm, setSdm] = useState(true);
   const [value, setValue] = useState('');
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { logout, user } = useAuth();
+  const { logout} = useAuth();
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -129,7 +129,7 @@ const ProfileSection = () => {
             aria-controls={open ? 'menu-list-grow' : undefined}
             aria-haspopup="true"
             color="inherit"
-            alt="user images"
+            alt={user?.user_metadata.first_name+" "+user?.user_metadata.last_name}
           />
         }
         label={<IconSettings stroke={1.5} size="24px" />}
@@ -167,7 +167,7 @@ const ProfileSection = () => {
                         <Stack direction="row" spacing={0.5} alignItems="center">
                           <Typography variant="h4">Good Morning,</Typography>
                           <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                            {user?.name}
+                            {user?.user_metadata.first_name.charAt(0).toUpperCase()+""+user?.user_metadata.first_name.split('').slice(1,user?.user_metadata.first_name.length).join('')}
                           </Typography>
                        
                    

@@ -22,6 +22,10 @@ import FooterSection from 'components/landingpage/FooterSection';
 
 // types
 import { ThemeMode } from 'types/config';
+import Loadable from 'ui-component/Loadable';
+import Loader from 'ui-component/Loader';
+import Loading from 'app/loading';
+import CircularLoader from 'ui-component/CircularLoader';
 
 // =============================|| LANDING MAIN ||============================= //
 type movi = 
@@ -47,14 +51,14 @@ type movi =
           };
 const Landing = () => {
   // const theme = useTheme();
-  const [headMovie, setHead] = useState<movi|undefined>()
+  const [headMovie, setHead] = useState<movi>()
   const [popularMovie, setPopular] = useState<movi[]>([])
   const [nowplayingMovie, setNowplaying] = useState<movi[]>([])
   const [topratedMovie, setToprated] = useState<movi[]>([])
   const [popularShow, setPopularS] = useState<movi[]>([])
   const [nowplayingShow, setNowplayingS] = useState<movi[]>([])
   const [topratedShow, setTopratedS] = useState<movi[]>([])
-
+  const [loadingg,setLoading]=useState(true)
   useEffect(()=>{
     (async()=>{
       const a:any=await util.getTrendingMov();
@@ -72,11 +76,13 @@ const Landing = () => {
         setPopularS(d);
         setNowplayingS(e);
         setTopratedS(f);
+        setLoading(false);
       }
     })();
+    
   },[])
   
-  return (
+  return loadingg?<CircularLoader/>:(
     <Box sx={{  bgcolor: 'background.default' }}>
       {/* 1. header and hero section */}
       <Box sx={{width:'100%'}}>
