@@ -47,7 +47,7 @@ const Header = () => {
   return (
     <>
       {/* logo & toggler button */}
-      <Box sx={{ width: downMD ? 'auto' : 230, display: 'flex', display:'flex', justifyContent:'center', alignItems:'center' }}>
+      <Box sx={{ width: downMD ? 'auto' : 230, display: 'flex', justifyContent:'center', alignItems:'center' }}>
         <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
           <LogoSection />
         </Box>
