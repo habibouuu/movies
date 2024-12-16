@@ -11,7 +11,9 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-
+import util from 'api/userFunctions';
+import { openSnackbar } from 'store/slices/snackbar';
+import { dispatch } from 'store';
 // third party
 import { motion } from 'framer-motion';
 
@@ -115,12 +117,13 @@ function getModalStyle() {
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-const HeaderSection = ({headMovie}:{headMovie:movi|undefined}) => {
+const HeaderSection = ({headMovie}:{headMovie:movi}) => {
   const theme = useTheme();
 const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [modalStyle] = React.useState(getModalStyle);
   
-    const [open, setOpen] = React.useState(false);
+    
+  const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
     };
@@ -129,68 +132,102 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
       setOpen(false);
     };
     interface BodyProps extends CardProps {
-          modalStyle: React.CSSProperties;
-          handleClose: () => void;
-        }
+      modalStyle: React.CSSProperties;
+      handleClose: () => void;
+    }
+    
+    const Body = React.forwardRef(({ modalStyle,  open, setOpen, handleClose, handleOpen }: any, ref: React.Ref<HTMLDivElement>) => (
+      <div ref={ref} tabIndex={-1}>
+        {/**
+         * sx={...modalStyle}
+         * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
+         */}
+        <MainCard
+          sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '35%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+headMovie.backdrop_path})` }}
+          title={headMovie.title?headMovie.title:headMovie.name}
+          content={false}
+          secondary={
+            <IconButton onClick={handleClose} size="large" aria-label="close modal">
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        >
+          <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
+            <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: '18px', md:'22px', lg: '26px'}, backgroundColor:'rgba(0, 0, 0, 0.55)', borderRadius:'6px',py:1 }}>
+              {headMovie.overview.length>130?headMovie.overview.slice(0,130)+'...':headMovie.overview}
+            </Typography>
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <SimpleModal  item={headMovie} open={open} setOpen={setOpen} handleClose={handleClose} handleOpen={handleOpen}/>
+          </CardActions>
+        </MainCard>
+      </div>
+    ));
+    
+    function SimpleModal({item, open, setOpen, handleClose, handleOpen}:any) {
+      // getModalStyle is not a pure function, we roll the style only on the first render
+      const [modalStyle] = React.useState(getModalStyle);
+    
+
+      const handleWatchLater = (elem:any) => {
+        (async ()=>{
+          await util.addwatchlater(elem)
+          
+        })();
+        
+        dispatch(
+            openSnackbar({
+              open: true,
+              message: 'Added to Watch Later',
+              variant: 'alert',
+              alert: {
+                color: 'success'
+              },
+              close: false
+            })
+          );
+          setTimeout(()=>{
+            handleClose();
+          },800)
+      };
+      const handleFavorites = (elem:any) => {
+        (async ()=>{
+          await util.addFavorites(elem)
+        })();
+
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: 'Added to Favorites',
+            variant: 'alert',
+            alert: {
+              color: 'success'
+            },
+            close: false
+          })
+        );
+        setTimeout(()=>{
+          handleClose();
+        },800)
+      };
+      return (
+        <Grid container justifyContent="flex-start">
+          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+            Watch Later
+          </Button>
+          <Box sx={{px:1}}/>
+          <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
+            Add to Favorites
+          </Button>
+          <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+            <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
+          </Modal>
+        </Grid>
+      );
+    }
   const headerSX = { fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem', lg: '3.5rem' } };
-  const Body = React.forwardRef(({ modalStyle, handleClose }: BodyProps, ref: React.Ref<HTMLDivElement>) => (
-    <div ref={ref} tabIndex={-1}>
-      {/**
-       * sx={...modalStyle}
-       * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
-       */}
-       {headMovie?(<MainCard
-        sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '35%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+headMovie.backdrop_path})` }}
-        title={headMovie.title?headMovie.title:headMovie.name}
-        content={false}
-        secondary={
-          <IconButton onClick={handleClose} size="large" aria-label="close modal">
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      >
-        <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
-          <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: '18px', md:'22px', lg: '26px'}, backgroundColor:'rgba(0, 0, 0, 0.55)', borderRadius:'6px',py:1 }}>
-            {headMovie.overview.length>130?headMovie.overview.slice(0,130)+'...':headMovie.overview}
-          </Typography>
-        </CardContent>
-        <Divider />
-        <CardActions>
-          <SimpleModal />
-        </CardActions>
-      </MainCard>
-    ):<></>}
-    </div>
-  ));
   
-  function SimpleModal() {
-    // getModalStyle is not a pure function, we roll the style only on the first render
-    const [modalStyle] = React.useState(getModalStyle);
-  
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
-  
-    return (
-      <Grid container justifyContent="flex-start">
-        <Button variant="contained" type="button" color='error' onClick={handleOpen}>
-          Open Modal
-        </Button>
-        <Box sx={{px:1}}/>
-        <Button variant="contained" type="button" color='secondary' onClick={handleOpen}>
-          Add to Favorites
-        </Button>
-        <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
-          <Body modalStyle={modalStyle} handleClose={handleClose} />
-        </Modal>
-      </Grid>
-    );
-  }
 
   return (
     <Container sx={{ height: '60vh', width:'95vw',display: 'flex', justifyContent: 'center',backgroundSize:'cover', backgroundImage: headMovie? `url('https://image.tmdb.org/t/p/w600_and_h900_bestv2${headMovie.backdrop_path}')`:'none' , alignItems: 'center' }}>
@@ -250,11 +287,7 @@ const downMD = useMediaQuery(theme.breakpoints.down('md'));
                       </Button>
                     </AnimateButton>
                   </Grid>
-                  <Grid item>
-                    <Button component={Link} href="https://links.codedthemes.com/hsqll" variant="contained" target="_blank" color='secondary' size="large">
-                      Add to list
-                    </Button>
-                  </Grid>
+                  
                 </Grid>
               </motion.div>
             </Grid>

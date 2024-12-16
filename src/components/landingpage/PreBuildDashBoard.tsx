@@ -13,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SubCard from 'ui-component/cards/SubCard';
@@ -24,6 +23,10 @@ import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import MainCard from 'ui-component/cards/MainCard';
+import util from 'api/userFunctions';
+import { openSnackbar } from 'store/slices/snackbar';
+import { dispatch } from 'store';
 
 
 // third-party
@@ -221,13 +224,13 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
         </>
       );
     };
-    const Body = React.forwardRef(({ modalStyle, handleClose }: BodyProps, ref: React.Ref<HTMLDivElement>) => (
+    const Body = React.forwardRef(({ modalStyle, item, open, setOpen, handleClose, handleOpen }: any, ref: React.Ref<HTMLDivElement>) => (
       <div ref={ref} tabIndex={-1}>
         {/**
          * sx={...modalStyle}
          * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
          */}
-         {item?(<MainCard
+        <MainCard
           sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '35%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+item.backdrop_path})` }}
           title={item.title?item.title:item.name}
           content={false}
@@ -244,42 +247,73 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
           </CardContent>
           <Divider />
           <CardActions>
-            <SimpleModal />
+            <SimpleModal  item={item} open={open} setOpen={setOpen} handleClose={handleClose} handleOpen={handleOpen}/>
           </CardActions>
         </MainCard>
-      ):<></>}
       </div>
     ));
     
-    function SimpleModal() {
+    function SimpleModal({item, open, setOpen, handleClose, handleOpen}:any) {
       // getModalStyle is not a pure function, we roll the style only on the first render
       const [modalStyle] = React.useState(getModalStyle);
     
-      const [open, setOpen] = React.useState(false);
-      const handleOpen = () => {
-        setOpen(true);
+
+      const handleWatchLater = (elem:any) => {
+        (async ()=>{
+          await util.addwatchlater(elem)
+          
+        })();
+        
+        dispatch(
+            openSnackbar({
+              open: true,
+              message: 'Added to Watch Later',
+              variant: 'alert',
+              alert: {
+                color: 'success'
+              },
+              close: false
+            })
+          );
+          setTimeout(()=>{
+            handleClose();
+          },800)
       };
-    
-      const handleClose = () => {
-        setOpen(false);
+      const handleFavorites = (elem:any) => {
+        (async ()=>{
+          await util.addFavorites(elem)
+        })();
+
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: 'Added to Favorites',
+            variant: 'alert',
+            alert: {
+              color: 'success'
+            },
+            close: false
+          })
+        );
+        setTimeout(()=>{
+          handleClose();
+        },800)
       };
-    
       return (
         <Grid container justifyContent="flex-start">
-          <Button variant="contained" type="button" color='error' onClick={handleOpen}>
-            Open Modal
+          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+            Watch Later
           </Button>
           <Box sx={{px:1}}/>
-          <Button variant="contained" type="button" color='secondary' onClick={handleOpen}>
+          <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
-            <Body modalStyle={modalStyle} handleClose={handleClose} />
+            <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>
         </Grid>
       );
     }
-
   return (
     <>
       <Grid container spacing={7.5} justifyContent="center" sx={{ px: 1.25 }}>
@@ -332,7 +366,7 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
             </Carousel>
           </Box>
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
-        <Body modalStyle={modalStyle} handleClose={handleClose} />
+        <Body item={item} modalStyle={modalStyle} handleClose={handleClose} open={open} setOpen={setOpen} handleOpen={handleOpen} />
       </Modal>
         </Grid>
       </Grid>

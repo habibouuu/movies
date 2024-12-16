@@ -13,11 +13,12 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { CardProps } from '@mui/material/Card';
 import Modal from '@mui/material/Modal';
-import { openSnackbar } from 'store/slices/snackbar';
-import { dispatch } from 'store';
+
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import util from 'api/userFunctions'
+import util from 'api/userFunctions';
+import { openSnackbar } from 'store/slices/snackbar';
+import { dispatch } from 'store';
 // assets
 import CloseIcon from '@mui/icons-material/Close';
 import Stack from '@mui/material/Stack';
