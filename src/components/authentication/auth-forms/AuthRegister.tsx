@@ -126,7 +126,7 @@ const JWTRegister = ({ ...others }) => {
               );
 
               setTimeout(() => {
-                router.push('/');
+                router.push('/login');
               }, 1500);
             }else{
               setStatus({ success: false });
