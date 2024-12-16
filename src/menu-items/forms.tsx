@@ -3,7 +3,9 @@ import { FormattedMessage } from 'react-intl';
 
 // types
 import { NavItemType } from 'types';
-
+import TheaterComedyOutlinedIcon from '@mui/icons-material/TheaterComedyOutlined';
+import MovieCreationOutlinedIcon from '@mui/icons-material/MovieCreationOutlined';
+import SentimentVeryDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentVeryDissatisfiedOutlined';
 // assets
 import {
   IconClipboardCheck,
@@ -25,7 +27,11 @@ const icons = {
   IconChartDots,
   IconStairsUp,
   IconMapPin,
-  IconTable
+  IconTable,
+  TheaterComedyOutlinedIcon,
+  MovieCreationOutlinedIcon,
+  SentimentVeryDissatisfiedOutlinedIcon,
+  
 };
 
 // ==============================|| UI FORMS MENU ITEMS ||============================== //
@@ -41,21 +47,22 @@ const forms: NavItemType = {
       title: <FormattedMessage id="Comedy" />,
       type: 'item',
       url: '/tv/comedy',
-      icon: icons.IconMapPin
+      icon: icons.TheaterComedyOutlinedIcon,
     },
     {
       id: 'tv-action',
       title: <FormattedMessage id="Action" />,
       type: 'item',
       url: '/tv/action',
-      icon: icons.IconClipboardCheck
+      icon: icons.MovieCreationOutlinedIcon,
     },
     {
       id: 'tv-drama',
       title: <FormattedMessage id="Drama" />,
       type: 'item',
       url: '/tv/drama',
-      icon: icons.IconStairsUp
+      icon: icons.SentimentVeryDissatisfiedOutlinedIcon,
+
     }
   ]
 };

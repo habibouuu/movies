@@ -3,7 +3,9 @@ import { FormattedMessage } from 'react-intl';
 
 // types
 import { NavItemType } from 'types';
-
+import TheaterComedyOutlinedIcon from '@mui/icons-material/TheaterComedyOutlined';
+import MovieCreationOutlinedIcon from '@mui/icons-material/MovieCreationOutlined';
+import SentimentVeryDissatisfiedOutlinedIcon from '@mui/icons-material/SentimentVeryDissatisfiedOutlined';
 // assets
 import {
   IconApps,
@@ -27,7 +29,11 @@ const icons = {
   IconLayoutKanban,
   IconMail,
   IconCalendar,
-  IconNfc
+  IconNfc,
+  TheaterComedyOutlinedIcon,
+  MovieCreationOutlinedIcon,
+  SentimentVeryDissatisfiedOutlinedIcon,
+// assets
 };
 
 // ==============================|| MENU ITEMS - APPLICATION ||============================== //
@@ -42,7 +48,7 @@ const application: NavItemType = {
       id: 'mov-comedy',
       title: 'Comedy',
       type: 'item',
-      icon: icons.IconLayoutKanban,
+      icon: icons.TheaterComedyOutlinedIcon,
       url: '/movies/comedy',
       breadcrumbs: false
     },
@@ -50,7 +56,7 @@ const application: NavItemType = {
       id: 'mov-action',
       title: <FormattedMessage id="Action" />,
       type: 'item',
-      icon: icons.IconMail,
+      icon: icons.MovieCreationOutlinedIcon,
       url: '/movies/action'
     },
     {
@@ -58,7 +64,7 @@ const application: NavItemType = {
       title: <FormattedMessage id="Drama" />,
       type: 'item',
       url: '/movies/drama',
-      icon: icons.IconCalendar
+      icon: icons.SentimentVeryDissatisfiedOutlinedIcon
     },
     
   ]

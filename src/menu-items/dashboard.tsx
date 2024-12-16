@@ -6,10 +6,15 @@ import { IconDashboard, IconDeviceAnalytics } from '@tabler/icons-react';
 
 // type
 import { NavItemType } from 'types';
-
+import TrendingUpOutlinedIcon from '@mui/icons-material/TrendingUpOutlined';
+import SwitchAccessShortcutOutlinedIcon from '@mui/icons-material/SwitchAccessShortcutOutlined';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 const icons = {
-  IconDashboard: IconDashboard,
-  IconDeviceAnalytics: IconDeviceAnalytics
+  IconDashboard,
+  IconDeviceAnalytics,
+  SwitchAccessShortcutOutlinedIcon,
+  TrendingUpOutlinedIcon,
+  HomeOutlinedIcon
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -17,7 +22,7 @@ const icons = {
 const dashboard: NavItemType = {
   id: 'home',
   title: <FormattedMessage id="home" />,
-  icon: icons.IconDashboard,
+  icon: icons.HomeOutlinedIcon,
   type: 'group',
   children: [
     {
@@ -25,7 +30,7 @@ const dashboard: NavItemType = {
       title: <FormattedMessage id="Trending" />,
       type: 'item',
       url: '/',
-      icon: icons.IconDashboard,
+      icon: icons.TrendingUpOutlinedIcon,
       breadcrumbs: false
     },
     {
@@ -33,7 +38,7 @@ const dashboard: NavItemType = {
       title: <FormattedMessage id="Upcoming" />,
       type: 'item',
       url: '/upcoming',
-      icon: icons.IconDeviceAnalytics,
+      icon: icons.SwitchAccessShortcutOutlinedIcon,
       breadcrumbs: false
     }
   ]
