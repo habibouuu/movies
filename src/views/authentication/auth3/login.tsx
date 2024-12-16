@@ -16,11 +16,17 @@ import AuthWrapper1 from 'components/authentication/AuthWrapper1';
 import AuthCardWrapper from 'components/authentication/AuthCardWrapper';
 import Logo from 'ui-component/Logo';
 import AuthLogin from 'components/authentication/auth-forms/AuthLogin';
+import { useRouter } from 'next/navigation';
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
   const { isLoggedIn } = useAuth();
+  const navigate = useRouter();
+  console.log(isLoggedIn)
+  if(isLoggedIn){
+    navigate.push('/')
+  }
   const downMD = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'));
 
   return (
@@ -60,7 +66,7 @@ const Login = () => {
                     <Grid item container direction="column" alignItems="center" xs={12}>
                       <Typography
                         component={Link}
-                        href={isLoggedIn ? '/pages/authentication/auth3/register' : '/register'}
+                        href={isLoggedIn ? '/' : '/signup'}
                         variant="subtitle1"
                         sx={{ textDecoration: 'none' }}
                       >

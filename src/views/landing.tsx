@@ -46,7 +46,7 @@ type movi =
             "video": boolean
           };
 const Landing = () => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [headMovie, setHead] = useState<movi|undefined>()
   const [popularMovie, setPopular] = useState<movi[]>([])
   const [nowplayingMovie, setNowplaying] = useState<movi[]>([])
@@ -75,6 +75,7 @@ const Landing = () => {
       }
     })();
   },[])
+  
   return (
     <Box sx={{  bgcolor: 'background.default' }}>
       {/* 1. header and hero section */}

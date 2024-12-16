@@ -58,7 +58,7 @@ type movi =
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-export default function MovieBox({ item }: { item: movi }) {
+export default function UserMovieBox({ item, typ, setDD }: { item: movi, typ:string, setDD:any }) {
   const theme = useTheme();
    const [modalStyle] = React.useState(getModalStyle);
   
@@ -131,6 +131,29 @@ export default function MovieBox({ item }: { item: movi }) {
             handleClose();
           },800)
       };
+      const handleRemoveWatch = (elem:any) => {
+        
+        (async ()=>{
+          await util.deletewatchlater(elem);
+          
+        })();
+        
+        dispatch(
+            openSnackbar({
+              open: true,
+              message: 'Movie removed',
+              variant: 'alert',
+              alert: {
+                color: 'success'
+              },
+              close: false
+            })
+          );
+          setTimeout(()=>{
+            handleClose();
+            setDD(true)
+          },800)
+      };
       const handleFavorites = (elem:any) => {
         (async ()=>{
           await util.addFavorites(elem)
@@ -151,15 +174,40 @@ export default function MovieBox({ item }: { item: movi }) {
           handleClose();
         },800)
       };
+      const handleRemoveFavorites = (elem:any) => {
+        (async ()=>{
+          await util.deletefavorite(elem)
+        })();
+          
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: 'Movie removed',
+            variant: 'alert',
+            alert: {
+              color: 'success'
+            },
+            close: false
+          })
+        );
+        setTimeout(()=>{
+          handleClose();
+          setDD(true)
+        },800)
+      };
       return (
         <Grid container justifyContent="flex-start">
-          <Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
-            Watch Later
-          </Button>
+          {typ=='watchlater'?<Button variant="contained" type="button" color='error' onClick={()=>handleRemoveWatch(item)}>
+            Remove From Watch Later
+          </Button>:<Button variant="contained" type="button" color='error' onClick={()=>handleWatchLater(item)}>
+            Add to Watch Later
+          </Button>}
           <Box sx={{px:1}}/>
-          <Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
+          {typ=='favorites'?<Button variant="contained" type="button" color='secondary' onClick={()=>handleRemoveFavorites(item)}>
+            Remove From Favorites
+          </Button>:<Button variant="contained" type="button" color='secondary' onClick={()=>handleFavorites(item)}>
             Add to Favorites
-          </Button>
+          </Button>}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>
@@ -231,7 +279,7 @@ export default function MovieBox({ item }: { item: movi }) {
         </Button>
       </SubCard>
       <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
-        <Body item={item} modalStyle={modalStyle} handleClose={handleClose} open={open} setOpen={setOpen} handleOpen={handleOpen} />
+        <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
       </Modal>
     </Box>
   );

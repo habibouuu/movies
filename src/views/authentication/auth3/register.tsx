@@ -61,7 +61,7 @@ const Register = () => {
                     <Grid item container direction="column" alignItems="center" xs={12}>
                       <Typography
                         component={Link}
-                        href={isLoggedIn ? '/pages/authentication/auth3/login' : '/login'}
+                        href={isLoggedIn ? '/' : '/login'}
                         variant="subtitle1"
                         sx={{ textDecoration: 'none' }}
                       >

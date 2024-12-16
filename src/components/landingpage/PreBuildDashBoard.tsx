@@ -1,13 +1,30 @@
-import Link from 'next/link';
 
-// material-ui
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+'use client'
+import React from 'react';
+
+import CardMedia from '@mui/material/CardMedia';
+// import Container from '@mui/material/Container';
+import { useTheme } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Grid from '@mui/material/Grid';
+import { CardProps } from '@mui/material/Card';
+import Modal from '@mui/material/Modal';
+// project imports
+import MainCard from 'ui-component/cards/MainCard';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import SubCard from 'ui-component/cards/SubCard';
+// assets
+import CloseIcon from '@mui/icons-material/Close';
+import Grid from '@mui/material/Grid';
+// material-ui
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 
 // third-party
 import { Carousel } from 'react-responsive-carousel';
@@ -15,23 +32,6 @@ import { Carousel } from 'react-responsive-carousel';
 // assets
 import { IconChevronRight, IconChevronLeft, IconLink } from '@tabler/icons-react';
 
-const SliderLight1 = '/assets/images/landing/pre-apps/slider-light-1.png';
-const SliderDark1 = '/assets/images/landing/pre-apps/slider-dark-1.png';
-const SliderLight2 = '/assets/images/landing/pre-apps/slider-light-2.png';
-const SliderDark2 = '/assets/images/landing/pre-apps/slider-dark-2.png';
-const SliderLight3 = '/assets/images/landing/pre-apps/slider-light-3.png';
-const SliderDark3 = '/assets/images/landing/pre-apps/slider-dark-3.png';
-const SliderLight4 = '/assets/images/landing/pre-apps/slider-light-4.png';
-const SliderDark4 = '/assets/images/landing/pre-apps/slider-dark-4.png';
-const SliderLight5 = '/assets/images/landing/pre-apps/slider-light-5.png';
-const SliderDark5 = '/assets/images/landing/pre-apps/slider-dark-5.png';
-const SliderLight6 = '/assets/images/landing/pre-apps/slider-light-6.png';
-const SliderDark6 = '/assets/images/landing/pre-apps/slider-dark-6.png';
-
-// types
-import { ThemeMode } from 'types/config';
-
-// styles
 const Images = styled('img')({
   width: '100%',
   height: 'auto',
@@ -116,51 +116,9 @@ function SamplePrevArrow(props: any) {
   );
 }
 
-interface ItemProps {
-  title: string;
-  caption?: string;
-  image: string;
- 
-}
 
-const Items = ({ title, caption, image}: ItemProps) => {
-  return (
-    <>
-      <Images
-        src={image}
-        alt="dashboard"
-        sx={{
-          // width: { xs: '100px', xl: 743 },
-          objectFit: 'contain',
-          direction: 'initial',
-          height:'60%'
-        }}
-      />
-      <Stack spacing={1} sx={{ pt: 1 }}>
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
-          justifyContent="center"
-          // component={Link}
-          // href={link}
-          // target="_blank"
-          sx={{ textDecoration: 'none' }}
-        >
-          <Typography variant="h3" sx={{ fontWeight: 500 }}>
-            {title}
-          </Typography>
-          <IconButton size="small" sx={{ color: 'text.primary' }}>
-            <IconLink aria-label="link button" size={18} />
-          </IconButton>
-        </Stack>
-        <Typography variant="subtitle2" color="text.primary" sx={{ fontSize: { xs: '1rem', xl: '1.125rem' } }}>
-          {caption}
-        </Typography>
-      </Stack>
-    </>
-  );
-};
+
+
 type movi = 
           {
             "adult": boolean,
@@ -179,12 +137,148 @@ type movi =
             "vote_count": number,
             "original_title": string,
             "release_date": Date,
-            "title": string,
+            "title"?: string,
             "video": boolean
           };
+  interface ItemProps {
+  title?: string;
+  caption?: string;
+  image: string;
+  name?:string;
+  elem?:movi;
+}
+          function rand() {
+            return Math.round(Math.random() * 20) - 10;
+          }
+          function getModalStyle() {
+            const top = 50 + rand();
+            const left = 50 + rand();
+          
+            return {
+              top: `${top}%`,
+              left: `${left}%`,
+              transform: `translate(-${top}%, -${left}%)`
+            };
+          }
 const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  const [item,setItem] = React.useState<movi|undefined>();
+  const [modalStyle] = React.useState(getModalStyle);
+  
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setItem(undefined);
+      setOpen(false);
+    };
+    interface BodyProps extends CardProps {
+      modalStyle: React.CSSProperties;
+      handleClose: () => void;
+    }
+    const Items = ({elem, title, caption, image}: ItemProps) => {
+      return (
+        <>
+        <Button
+        onClick={()=>{handleOpen();setItem(elem)}}
+        >
+          <Images
+            src={image}
+            
+            alt="dashboard"
+            sx={{
+              // width: { xs: '100px', xl: 743 },
+              objectFit: 'contain',
+              direction: 'initial',
+              height:'100%',
+              borderRadius: '7%'
+            }}
+          />
+          </Button>
+          <Stack spacing={1} sx={{ pt: 1 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              justifyContent="center"
+              component={Button}            
+              onClick={()=>{handleOpen();setItem(elem)}}
+              // href={link}
+              // target="_blank"
+              sx={{ textDecoration: 'none' }}
+            >
+              <Typography variant="h3" sx={{ fontWeight: 500 }}>
+                {title}
+              </Typography>
+            </Stack>
+            <Typography variant="subtitle2" color="text.primary" sx={{ fontSize: { xs: '1rem', xl: '1.125rem' } }}>
+              {caption}
+            </Typography>
+          </Stack>
+        </>
+      );
+    };
+    const Body = React.forwardRef(({ modalStyle, handleClose }: BodyProps, ref: React.Ref<HTMLDivElement>) => (
+      <div ref={ref} tabIndex={-1}>
+        {/**
+         * sx={...modalStyle}
+         * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
+         */}
+         {item?(<MainCard
+          sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '35%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+item.backdrop_path})` }}
+          title={item.title?item.title:item.name}
+          content={false}
+          secondary={
+            <IconButton onClick={handleClose} size="large" aria-label="close modal">
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        >
+          <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
+            <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: '18px', md:'22px', lg: '26px'}, backgroundColor:'rgba(0, 0, 0, 0.55)', borderRadius:'6px',py:1 }}>
+              {item.overview.length>130?item.overview.slice(0,130)+'...':item.overview}
+            </Typography>
+          </CardContent>
+          <Divider />
+          <CardActions>
+            <SimpleModal />
+          </CardActions>
+        </MainCard>
+      ):<></>}
+      </div>
+    ));
+    
+    function SimpleModal() {
+      // getModalStyle is not a pure function, we roll the style only on the first render
+      const [modalStyle] = React.useState(getModalStyle);
+    
+      const [open, setOpen] = React.useState(false);
+      const handleOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+    
+      return (
+        <Grid container justifyContent="flex-start">
+          <Button variant="contained" type="button" color='error' onClick={handleOpen}>
+            Open Modal
+          </Button>
+          <Box sx={{px:1}}/>
+          <Button variant="contained" type="button" color='secondary' onClick={handleOpen}>
+            Add to Favorites
+          </Button>
+          <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+            <Body modalStyle={modalStyle} handleClose={handleClose} />
+          </Modal>
+        </Grid>
+      );
+    }
 
   return (
     <>
@@ -227,7 +321,8 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
             >
               {movies && movies.map((elem,index)=>{
                 return <Items 
-                title={elem.title}
+                elem={elem}
+                title={elem.title?elem.title:elem.name}
                 image={'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+elem.poster_path}
               
               />
@@ -236,6 +331,9 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
               
             </Carousel>
           </Box>
+          <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+        <Body modalStyle={modalStyle} handleClose={handleClose} />
+      </Modal>
         </Grid>
       </Grid>
     </>

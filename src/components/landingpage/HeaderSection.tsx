@@ -17,6 +17,33 @@ import { motion } from 'framer-motion';
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import React from 'react';
+
+
+// import Container from '@mui/material/Container';
+import { useTheme } from '@mui/material/styles';
+
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import { CardProps } from '@mui/material/Card';
+import Modal from '@mui/material/Modal';
+// project imports
+import MainCard from 'ui-component/cards/MainCard';
+
+import SubCard from 'ui-component/cards/SubCard';
+// assets
+import CloseIcon from '@mui/icons-material/Close';
+
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
+// third-party
+import { Carousel } from 'react-responsive-carousel';
+
+// assets
+import { IconChevronRight, IconChevronLeft, IconLink } from '@tabler/icons-react';
 
 import { DASHBOARD_PATH } from 'config';
 import useConfig from 'hooks/useConfig';
@@ -75,11 +102,95 @@ type movi =
             "title": string,
             "video": boolean
           };
+function rand() {
+            return Math.round(Math.random() * 20) - 10;
+          }
+function getModalStyle() {
+            const top = 50 + rand();
+            const left = 50 + rand();
+          
+            return {
+              top: `${top}%`,
+              left: `${left}%`,
+              transform: `translate(-${top}%, -${left}%)`
+            };
+          }
 const HeaderSection = ({headMovie}:{headMovie:movi|undefined}) => {
-  // const { mode, themeDirection } = useConfig();
-
+  const theme = useTheme();
+const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  const [modalStyle] = React.useState(getModalStyle);
+  
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+    interface BodyProps extends CardProps {
+          modalStyle: React.CSSProperties;
+          handleClose: () => void;
+        }
   const headerSX = { fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem', lg: '3.5rem' } };
-
+  const Body = React.forwardRef(({ modalStyle, handleClose }: BodyProps, ref: React.Ref<HTMLDivElement>) => (
+    <div ref={ref} tabIndex={-1}>
+      {/**
+       * sx={...modalStyle}
+       * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
+       */}
+       {headMovie?(<MainCard
+        sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '35%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+headMovie.backdrop_path})` }}
+        title={headMovie.title?headMovie.title:headMovie.name}
+        content={false}
+        secondary={
+          <IconButton onClick={handleClose} size="large" aria-label="close modal">
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      >
+        <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
+          <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: '18px', md:'22px', lg: '26px'}, backgroundColor:'rgba(0, 0, 0, 0.55)', borderRadius:'6px',py:1 }}>
+            {headMovie.overview.length>130?headMovie.overview.slice(0,130)+'...':headMovie.overview}
+          </Typography>
+        </CardContent>
+        <Divider />
+        <CardActions>
+          <SimpleModal />
+        </CardActions>
+      </MainCard>
+    ):<></>}
+    </div>
+  ));
+  
+  function SimpleModal() {
+    // getModalStyle is not a pure function, we roll the style only on the first render
+    const [modalStyle] = React.useState(getModalStyle);
+  
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
+  
+    return (
+      <Grid container justifyContent="flex-start">
+        <Button variant="contained" type="button" color='error' onClick={handleOpen}>
+          Open Modal
+        </Button>
+        <Box sx={{px:1}}/>
+        <Button variant="contained" type="button" color='secondary' onClick={handleOpen}>
+          Add to Favorites
+        </Button>
+        <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+          <Body modalStyle={modalStyle} handleClose={handleClose} />
+        </Modal>
+      </Grid>
+    );
+  }
 
   return (
     <Container sx={{ height: '60vh', width:'95vw',display: 'flex', justifyContent: 'center',backgroundSize:'cover', backgroundImage: headMovie? `url('https://image.tmdb.org/t/p/w600_and_h900_bestv2${headMovie.backdrop_path}')`:'none' , alignItems: 'center' }}>
@@ -127,9 +238,9 @@ const HeaderSection = ({headMovie}:{headMovie:movi|undefined}) => {
                   <Grid item>
                     <AnimateButton>
                       <Button
-                        component={Link}
-                        href={DASHBOARD_PATH}
-                        target="_blank"
+               
+                        onClick={handleOpen}
+                        // target="_blank"
                         size="large"
                         variant="contained"
                         color="error"
@@ -147,6 +258,9 @@ const HeaderSection = ({headMovie}:{headMovie:movi|undefined}) => {
                 </Grid>
               </motion.div>
             </Grid>
+            <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
+        <Body modalStyle={modalStyle} handleClose={handleClose} />
+      </Modal>
             {/* <Grid item xs={12}>
               <motion.div
                 initial={{ opacity: 0, translateY: 550 }}

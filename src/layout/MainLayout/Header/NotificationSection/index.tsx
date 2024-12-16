@@ -94,16 +94,11 @@ const NotificationSection = () => {
       <Link
 
       href='/search'
-        sx={{
-          ml: 2,
-          [theme.breakpoints.down('lg')]: {
-            mr: 2
-          }
-        }}
+       
       >
         <Avatar
           variant="rounded"
-          sx={{
+          sx={{padding:2,
             ...theme.typography.commonAvatar,
             ...theme.typography.mediumAvatar,
             transition: 'all .2s ease-in-out',
@@ -120,7 +115,7 @@ const NotificationSection = () => {
           onClick={handleToggle}
           color="inherit"
         >
-          <SearchIcon stroke={1.5} size="20px" />
+          <SearchIcon component='svg' />
         </Avatar>
       </Link>
     </>

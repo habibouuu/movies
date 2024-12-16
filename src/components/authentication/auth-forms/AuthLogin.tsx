@@ -16,7 +16,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
-
+import util from 'api/user'
 // third party
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -32,7 +32,21 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // ===============================|| JWT LOGIN ||=============================== //
-
+const setSession = (serviceToken?: string | null) => {
+  const TIMESTAMP = Date.now();
+  console.log(serviceToken)
+  if (serviceToken) {
+    localStorage.setItem('serviceToken', JSON.stringify({
+      serviceToken: serviceToken,
+      expiresOn: TIMESTAMP + 1000*3600 //in milliseconds
+    }));
+    console.log('here')
+    // axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+  } else {
+    localStorage.removeItem('serviceToken');
+  
+  }
+};
 const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   const theme = useTheme();
   const router = useRouter();
@@ -53,8 +67,8 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
   return (
     <Formik
       initialValues={{
-        email: 'info@codedthemes.com',
-        password: '123456',
+        email: 'Enter email here',
+        password: 'Enter password',
         submit: null
       }}
       validationSchema={Yup.object().shape({
@@ -63,8 +77,9 @@ const JWTLogin = ({ loginProp, ...others }: { loginProp?: number }) => {
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          await login(values.email, values.password);
-          if (scriptedRef.current) {
+          const a:any = login(values.email, values.password);
+          if (scriptedRef.current && a) {
+            setSession(a.session.access_token)
             setStatus({ success: true });
             router.push(DASHBOARD_PATH);
             setSubmitting(false);

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-
+import util from 'api/user';
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -40,7 +40,20 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // ===========================|| JWT - REGISTER ||=========================== //
-
+const setSession = (serviceToken?: string | null) => {
+  const TIMESTAMP = Date.now();
+  console.log(serviceToken)
+  if (serviceToken) {
+    localStorage.setItem('serviceToken', JSON.stringify({
+      serviceToken: serviceToken,
+      expiresOn: TIMESTAMP + 1000*3600 //in milliseconds
+    }));
+    console.log('here')
+    // axios.defaults.headers.common.Authorization = `Bearer ${serviceToken}`;
+  } else {
+    localStorage.removeItem('serviceToken');
+  }
+};
 const JWTRegister = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
@@ -95,9 +108,11 @@ const JWTRegister = ({ ...others }) => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            await register(values.email, values.password, values.firstName, values.lastName);
-            if (scriptedRef.current) {
+            const a:any= await register(values.email, values.password, values.firstName, values.lastName);
+            console.log(a)
+            if (scriptedRef.current && a) {
               setStatus({ success: true });
+               setSession(a.session.access_token);
               setSubmitting(false);
               dispatch(
                 openSnackbar({
@@ -112,14 +127,18 @@ const JWTRegister = ({ ...others }) => {
               );
 
               setTimeout(() => {
-                router.push('/login');
+                router.push('/');
               }, 1500);
+            }else{
+              setStatus({ success: false });
+              setErrors({ submit: "Unable to signup, maybe retry with a different email" });
+              setSubmitting(false);
             }
           } catch (err: any) {
             console.error(err);
             if (scriptedRef.current) {
               setStatus({ success: false });
-              setErrors({ submit: err.message });
+              setErrors({ submit: "Unable to signup, retry with a different email" });
               setSubmitting(false);
             }
           }
