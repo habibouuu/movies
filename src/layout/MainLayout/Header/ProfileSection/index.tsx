@@ -228,24 +228,7 @@ const ProfileSection = () => {
                               }
                             />
                           </ListItemButton>
-                          <ListItemButton
-                            sx={{ borderRadius: `${borderRadius}px` }}
-                            selected={selectedIndex === 2}
-                            onClick={(event: React.MouseEvent<HTMLDivElement>) =>
-                              handleListItemClick(event, 2, '/settings')
-                            }
-                          >
-                            <ListItemIcon>
-                              <IconSettings stroke={1.5} size="20px" />
-                            </ListItemIcon>
-                            <ListItemText
-                              primary={
-                                <Typography variant="body2">
-                                  <FormattedMessage id="account-settings" />
-                                </Typography>
-                              }
-                            />
-                          </ListItemButton>
+                         
                          
                           <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} selected={selectedIndex === 4} onClick={handleLogout}>
                             <ListItemIcon>
