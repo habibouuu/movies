@@ -35,7 +35,7 @@ export default function page() {
             console.log(a)
             if(a) {
                 setMovies(a.results);
-                setTotal(Math.ceil(a.total_pages/20));
+                setTotal(Math.ceil(a.total_pages));
 
             }
         })();
