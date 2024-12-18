@@ -327,8 +327,8 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
           <Box
             className="preBuildDashBoard-slider"
             sx={{
-              direction: 'initial','.css-1i6hmxt-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '10%'},ml:5,mt:1},
-              '.css-1ohaq49-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '10%'},mr:5,mt:1},
+              direction: 'initial','.css-1i6hmxt-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '0'},ml:5,mt:1},
+              '.css-1ohaq49-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '0'},mr:5,mt:1},
               
               '.slider': { height: { xs: 'auto' }, '& .slide:not(.selected)': { transformOrigin: 'center !important' } }
             }}
