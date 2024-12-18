@@ -39,7 +39,6 @@ const dashboard: NavItemType = {
       type: 'item',
       url: '/upcoming',
       icon: icons.SwitchAccessShortcutOutlinedIcon,
-      breadcrumbs: false
     }
   ]
 };

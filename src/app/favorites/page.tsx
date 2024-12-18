@@ -36,7 +36,7 @@ export default function page() {
                         console.log(a)
                         if(a) {
                             setMovies(a.favorites.movies);
-                            setTotal(a.favorites.total);
+                            setTotal(Math.ceil(a.favorites.total/20));
             
                         }
         })();

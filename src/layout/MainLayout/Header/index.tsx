@@ -99,7 +99,7 @@ const Header = () => {
       </Box>
 <Box sx={{ flexGrow: 1 }} />
       {/* profile */}
-      {isLoggedIn?<ProfileSection user={user}/>:<Button onClick={()=>navigate.push('/login')} variant='contained' color='error'>LOGIN</Button>}
+      {isLoggedIn?<ProfileSection user={user?user:''}/>:<Button onClick={()=>navigate.push('/login')} variant='contained' color='error'>LOGIN</Button>}
 
       {/* mobile header */}
       {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>

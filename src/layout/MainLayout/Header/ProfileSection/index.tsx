@@ -45,7 +45,6 @@ const ProfileSection = ({user}:any) => {
   const theme = useTheme();
   const { borderRadius } = useConfig();
   const navigate = useRouter();
-  console.log(user)
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const { logout} = useAuth();
@@ -92,7 +91,7 @@ const ProfileSection = ({user}:any) => {
   }, [open]);
 
   return (
-    <>
+    <>{user && <>
       <Chip
         sx={{
           height: '48px',
@@ -248,6 +247,8 @@ const ProfileSection = ({user}:any) => {
           </ClickAwayListener>
         )}
       </Popper>
+      </>
+}
     </>
   );
 };

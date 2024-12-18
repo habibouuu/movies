@@ -36,7 +36,7 @@ export default function page() {
             console.log(a.watchlater.movies)
             if(a) {
                 setMovies(a.watchlater.movies);
-                setTotal(a.watchlater.total);
+                setTotal(Math.ceil(a.watchlater.total/20));
 
             }
         })();

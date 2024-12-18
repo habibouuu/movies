@@ -4,8 +4,8 @@ async function getUser(){
 
    
     const { data: { user } } = await supabase.auth.getUser()
-
-    const { data: userInfo, error } = await supabase
+    if(user){
+        const { data: userInfo, error } = await supabase
     .from('userInfo')
     .select('*')
     .eq('id', user.id)
@@ -13,6 +13,8 @@ async function getUser(){
     if(!userInfo[0]) await util.insertUser(user.id);
 
     return user
+    }
+    
   
 }
 async function getSession(){

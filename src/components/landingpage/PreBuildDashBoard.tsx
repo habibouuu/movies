@@ -91,8 +91,8 @@ function SamplePrevArrow(props: any) {
         top: 'calc(50% - 70px)',
         cursor: 'pointer',
         bgcolor: `${theme.palette.background.paper} !important`,
-        width: { xs: '40px !important', xl: '65px !important' },
-        height: { xs: '40px !important', xl: '65px !important' },
+        width: { xs: '40px ', xl: '65px !important' },
+        height: { xs: '40px', xl: '65px !important' },
         boxShadow: '0px 24px 38px rgba(9, 15, 37, 0.07)',
         '&:after': {
           content: '""',
@@ -327,7 +327,9 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
           <Box
             className="preBuildDashBoard-slider"
             sx={{
-              direction: 'initial',
+              direction: 'initial','.css-1i6hmxt-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '25%'},ml:5,mt:1},
+              '.css-1ohaq49-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '25%'},mr:5,mt:1},
+              
               '.slider': { height: { xs: 'auto' }, '& .slide:not(.selected)': { transformOrigin: 'center !important' } }
             }}
           >
@@ -342,7 +344,7 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
               emulateTouch={true}
               swipeable={true}
               autoPlay={true}
-              interval={2000}
+              interval={3300}
               renderArrowPrev={(onClickHandler, hasPrev, label) =>
                 hasPrev && <SamplePrevArrow onClickHandler={onClickHandler} hasPrev={hasPrev} label={label} />
               }
@@ -352,6 +354,7 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
             >
               {movies && movies.map((elem,index)=>{
                 return <Items 
+                key={index}
                 elem={elem}
                 title={elem.title?elem.title:elem.name}
                 image={'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+elem.poster_path}

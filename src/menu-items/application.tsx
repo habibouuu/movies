@@ -50,7 +50,6 @@ const application: NavItemType = {
       type: 'item',
       icon: icons.TheaterComedyOutlinedIcon,
       url: '/movies/comedy',
-      breadcrumbs: false
     },
     {
       id: 'mov-action',
