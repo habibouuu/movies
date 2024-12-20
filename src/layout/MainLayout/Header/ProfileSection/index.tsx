@@ -70,6 +70,7 @@ const ProfileSection = ({user}:any) => {
   };
 
   const handleListItemClick = (event: React.MouseEvent<HTMLDivElement>, index: number, route: string = '') => {
+    event.preventDefault();
     setSelectedIndex(index);
     handleClose(event);
 
