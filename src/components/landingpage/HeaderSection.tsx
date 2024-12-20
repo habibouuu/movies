@@ -138,6 +138,10 @@ const HeaderSection = ({headMovie}:{headMovie:any}) => {
       return (
         <Grid container justifyContent="flex-start">
           {isLoggedIn?<>
+            <Button variant="contained" type="button" color='success' onClick={()=>(router.push(`/movie/${item.name?item.name:item.title}/${item.id}`))}>
+            Watch
+          </Button>
+            <Box sx={{px:1}}/>
           <Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>

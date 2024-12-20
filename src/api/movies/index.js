@@ -178,7 +178,10 @@ async function searchMovies(page,query){
         .catch(err => console.error(err));
         return data
 }
+async function watchMovies(id){
+    let data
 
+}
 
 export default {
     getTrendingMov,

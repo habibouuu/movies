@@ -92,7 +92,7 @@ type movi =
             "title": string,
             "video": boolean
           };
-const FrameworkSection = ({title, movies}:{title:string, movies:movi[]}) => {
+const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ:string}) => {
 
   const settings: Settings = {
     dots: false,
@@ -168,7 +168,7 @@ const FrameworkSection = ({title, movies}:{title:string, movies:movi[]}) => {
           <Box sx={{p:3}}/>
         <Slider {...settings}>
           {movies.map((item:movi, index:number) => (
-            <MovieBox key={index} item={item}/>
+            <MovieBox typ={typ} key={index} item={item}/>
           ))}
         </Slider>
       </Box>

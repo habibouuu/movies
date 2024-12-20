@@ -100,25 +100,25 @@ const Landing = () => {
 
       {/* 4. Apps */}
       <Box sx={{ py: 5 }}>
-        <PreBuildDashBoard title='Popular Movies' movies={popularMovie}/>
+        <PreBuildDashBoard title='Popular Movies' typ="movies" movies={popularMovie}/>
       </Box>
 
       <Box sx={{ py: 3 }}>
-        <FrameworkSection title='Now Playing' movies={nowplayingMovie}/>
+        <FrameworkSection title='Now Playing' typ="movies" movies={nowplayingMovie}/>
       </Box>
 
       <Box sx={{ py: 3 }}>
-        <FrameworkSection title='Top Rated' movies={topratedMovie}/>
+        <FrameworkSection title='Top Rated' typ='movies' movies={topratedMovie}/>
       </Box>
 
       <Box sx={{ py: 5 }}>
-        <PreBuildDashBoard title='Popular Shows' movies={popularShow}/>
+        <PreBuildDashBoard title='Popular Shows' typ='shows' movies={popularShow}/>
       </Box>
       <Box sx={{ py: 3 }}>
-        <FrameworkSection title='Now Playing' movies={nowplayingShow}/>
+        <FrameworkSection title='Now Playing' typ='shows' movies={nowplayingShow}/>
       </Box>
       <Box sx={{ py: 3 }}>
-        <FrameworkSection title='Top Rated' movies={topratedShow}/>
+        <FrameworkSection title='Top Rated' typ='shows' movies={topratedShow}/>
       </Box>
 
       {/* 5. people section */}

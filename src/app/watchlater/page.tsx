@@ -50,7 +50,7 @@ export default function page() {
     <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', gap:'30px' , justifyContent:'center',alignItems:'center'}}>
       <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:{xs:1, md: 3}, flexWrap: 'wrap'}}>
 
-        {Movies.map((elem:any,index:number)=><UserMovieBox setDD={setDD} item ={elem} typ='watchlater'/>)}
+        {Movies.map((elem:any,index:number)=><UserMovieBox typee={elem.title?'movies':'shows'} setDD={setDD} item ={elem} typ='watchlater'/>)}
         
       </Box>
       <Pagination count={totalPages} page={page} onChange={handleChange}></Pagination>

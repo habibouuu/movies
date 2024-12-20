@@ -146,6 +146,7 @@ type movi =
   image: string;
   name?:string;
   elem?:movi;
+  typ?:string;
 }
           function rand() {
             return Math.round(Math.random() * 20) - 10;
@@ -160,7 +161,7 @@ type movi =
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
+const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ:string}) => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [item,setItem] = React.useState<movi|undefined>();
@@ -177,7 +178,7 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
       setOpen(false);
     };
   
-    const Items = ({elem, title, caption, image}: ItemProps) => {
+    const Items = ({elem, typ, title, caption, image}: ItemProps) => {
       return (
         <>
         <Button
@@ -296,7 +297,12 @@ const PreBuildDashBoard = ({movies, title}:{movies:movi[],title:string}) => {
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn?<><Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
+          {isLoggedIn?<>
+            <Button variant="contained" type="button" color='success' onClick={()=>(typ=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`))}>
+            Watch
+          </Button>
+          <Box sx={{px:1}}/>
+          <Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
           <Box sx={{px:1}}/>

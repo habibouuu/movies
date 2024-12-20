@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-
+const withVideos = require('next-videos')
 module.exports = {
   // todo: this need to set to true or remove it as default is true. set false as chart was giving error when first render
   // https://github.com/apexcharts/apexcharts.js/issues/3652
@@ -15,6 +15,7 @@ module.exports = {
       transform: '@mui/icons-material/{{member}}'
     }
   },
+  withVideos,
   images: {
     remotePatterns: [
       {

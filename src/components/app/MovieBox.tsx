@@ -57,7 +57,7 @@ type movi =
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-export default function MovieBox({ item }: { item: movi }) {
+export default function MovieBox({ item, typ }: { item: movi, typ: string }) {
   const theme = useTheme();
    const [modalStyle] = React.useState(getModalStyle);
    const router = useRouter();
@@ -147,7 +147,12 @@ export default function MovieBox({ item }: { item: movi }) {
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn?<><Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
+          {isLoggedIn?<>
+            <Button variant="contained" type="button" color='success' onClick={()=>(typ=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`))}>
+            Watch
+          </Button>
+          <Box sx={{px:1}}/>
+          <Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
             Watch Later
           </Button>
           <Box sx={{px:1}}/>
@@ -162,6 +167,7 @@ export default function MovieBox({ item }: { item: movi }) {
         </Grid>
       );
     }
+    console.log(typ)
   return (
     <Box
       sx={{

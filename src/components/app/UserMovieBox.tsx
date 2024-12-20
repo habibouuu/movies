@@ -21,6 +21,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SubCard from 'ui-component/cards/SubCard';
+import { useRouter } from 'next/navigation';
 // import Modal from 'views/forms/plugins/frm-modal';
 type movi = 
           {
@@ -56,10 +57,10 @@ type movi =
               transform: `translate(-${top}%, -${left}%)`
             };
           }
-export default function UserMovieBox({ item, typ, setDD }: { item: movi, typ:string, setDD:any }) {
+export default function UserMovieBox({ item, typ, typee, setDD }: { item: movi, typ:string, typee:string, setDD:any }) {
   const theme = useTheme();
    const [modalStyle] = React.useState(getModalStyle);
-  
+  const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -190,6 +191,10 @@ export default function UserMovieBox({ item, typ, setDD }: { item: movi, typ:str
       };
       return (
         <Grid container justifyContent="flex-start">
+          <Button variant="contained" type="button" color='success' onClick={()=>typee=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`)}>
+            Watch
+          </Button>
+          <Box sx={{px:1}}/>
           {typ=='watchlater'?<Button variant="contained" type="button" color='secondary' onClick={()=>handleRemoveWatch(item)}>
             Remove From Watch Later
           </Button>:<Button variant="contained" type="button" color='secondary' onClick={()=>handleWatchLater(item)}>
