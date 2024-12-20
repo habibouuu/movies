@@ -69,6 +69,7 @@ const Header = () => {
             onClick={() => handlerDrawerOpen(!drawerOpen)}
             color="inherit"
           >
+        
             <IconMenu2 stroke={1.5} size="20px" />
           </Avatar>
         )}

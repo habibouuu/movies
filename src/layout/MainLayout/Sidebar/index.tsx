@@ -34,7 +34,7 @@ const Sidebar = () => {
 
   const logo = useMemo(
     () => (
-      <Box sx={{ display: 'flex', p: 2 }}>
+      <Box onClick={()=>handlerDrawerOpen(false)} sx={{ display: 'flex', p: 2 }}>
         <LogoSection />
       </Box>
     ),

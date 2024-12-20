@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import NextLink from 'next/link';
 
 // project imports
 import { DASHBOARD_PATH } from 'config';
@@ -7,9 +7,9 @@ import Logo from 'ui-component/Logo';
 // ==============================|| MAIN LOGO ||============================== //
 
 const LogoSection = () => (
-  <Link href={DASHBOARD_PATH} aria-label="theme logo">
+  <NextLink href={DASHBOARD_PATH} aria-label="theme logo">
     <Logo />
-  </Link>
+  </NextLink>
 );
 
 export default LogoSection;
