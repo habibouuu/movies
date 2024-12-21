@@ -15,7 +15,7 @@ async function getTrendingMov(){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data.results
         })
         .catch(err => console.error(err));
@@ -40,7 +40,7 @@ async function getTopratedMov(){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data.results
         })
         .catch(err => console.error(err));
@@ -65,7 +65,7 @@ async function getNowplayingMov(){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data.results
         })
         .catch(err => console.error(err));
@@ -89,11 +89,11 @@ async function getComedyMov(page){
       await axios
         .request(options)
         .then(res => {
-            // console.log(res.data)
+            // 
             data=res.data
         })
         .catch(err => console.error(err));
-        console.log(data)
+        
         return data
 }
 async function getDramaMov(page){
@@ -110,7 +110,7 @@ async function getDramaMov(page){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data
         })
         .catch(err => console.error(err));
@@ -132,7 +132,7 @@ async function getActionMov(page){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data
         })
         .catch(err => console.error(err));
@@ -152,17 +152,28 @@ async function getUpcomingMov(page){
      await axios
         .request(options)
         .then(res => {
-            console.log(res.data)
+            
             data = res.data
         })
         .catch(err => console.error(err));
         return data
 }
 async function searchMovies(page,query){
-    let data
+    let data = {
+        results:[],
+        total_pages:0
+    }
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=${page}`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      const options1 = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/search/tv?query=${query}&include_adult=false&language=en-US&page=${page}`,
         headers: {
           accept: 'application/json',
           Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
@@ -172,10 +183,22 @@ async function searchMovies(page,query){
       await axios
         .request(options)
         .then(res =>{
-            console.log(res.data)
-            data=res.data
+            
+            data.results=[...data.results,...res.data.results]
+            data.total_pages=data.total_pages+res.data.total_pages
         })
         .catch(err => console.error(err));
+    await axios
+        .request(options1)
+        .then(res =>{
+            
+            data.results=[...data.results,...res.data.results]
+            data.total_pages=data.total_pages+res.data.total_pages
+        })
+        .catch(err => console.error(err));
+
+        data.results= data.results.sort((a, b)=>a.id-b.id)
+        data.total_pages-=1
         return data
 }
 async function watchMovies(id){
