@@ -197,7 +197,7 @@ async function searchMovies(page,query){
         })
         .catch(err => console.error(err));
 
-        data.results= data.results.sort((a, b)=>a.id-b.id)
+        data.results= data.results.sort((a, b)=>a.popularity-b.popularity)
         data.total_pages-=1
         return data
 }

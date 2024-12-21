@@ -227,7 +227,7 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
          * Property 'style' does not exist on type 'IntrinsicAttributes & MainCardProps & RefAttributes<HTMLDivElement>
          */}
         <MainCard
-          sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', height: { xs: '60%', md:'45%', lg: '50%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+item.backdrop_path})` }}
+          sx={{ position: 'absolute', width: { xs: '95%', md:'85%', lg: '70%' }, backgroundSize:'cover', minHeight:'400px', height: { xs: '40%', md:'40%', lg: '45%' }, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', backgroundImage: `url(${'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+item.backdrop_path})` }}
           title={item.title?item.title:item.name}
           content={false}
           secondary={
@@ -236,7 +236,7 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
             </IconButton>
           }
         >
-          <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
+    <CardContent sx={{width:{ xs: '75%', md:'50%', lg: '50%' }}}>
             <Typography variant="body1" sx={{ mt: 2, fontSize: { xs: '18px', md:'22px', lg: '26px'}, backgroundColor:'rgba(0, 0, 0, 0.55)', borderRadius:'6px',py:1 }}>
               {item.overview.length>130?item.overview.slice(0,130)+'...':item.overview}
             </Typography>
