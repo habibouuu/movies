@@ -1,6 +1,7 @@
 "use client"
 import { Container, Box, Typography } from '@mui/material';
 import { useParams } from 'next/navigation'
+
 import React from 'react'
 // import Video from 'next-video';
 export default function page() {
