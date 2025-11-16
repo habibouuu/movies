@@ -59,7 +59,7 @@ const JWTRegister = ({ ...others }) => {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = React.useState(false);
-  const [checked, setChecked] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
   const [strength, setStrength] = React.useState(0);
   const [level, setLevel] = React.useState<StringColorProps>();
 
@@ -109,7 +109,7 @@ const JWTRegister = ({ ...others }) => {
           try {
             const a:any= await register(values.email, values.password, values.firstName, values.lastName);
             console.log(a)
-            if (scriptedRef.current && a) {
+            if (scriptedRef.current && a && checked==true) {
               setStatus({ success: true });
               if(a.session) setSession(a.session.access_token);
               setSubmitting(false);
