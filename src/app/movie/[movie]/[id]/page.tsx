@@ -9,7 +9,7 @@ export default function page() {
     
   return (
     <Container sx={{height:{xs:'400px', md:'500px', lg:'630px', mt:2}, display:'flex', flexDirection:'column'}}>
-        <iframe sandbox="allow-scripts allow-same-origin" width="100%" height="100%" src={`https://vidsrc-embed.ru/embed/movie/${params.id}`} title={params.movie+''} frameBorder="0" allow="" referrerPolicy="" allowFullScreen></iframe>
+        <iframe sandbox="allow-scripts allow-same-origin" width="100%" height="100%" src={`https://vidsrc.to/embed/movie/${params.id}`} title={params.movie+''} frameBorder="0" allow="" referrerPolicy="" allowFullScreen></iframe>
       <Box sx={{p:3}}/>
       <Typography variant='h1'>{params.movie && params.movie.split('%20').join(' ').split('%3').join(': ')}</Typography>
     </Container>
