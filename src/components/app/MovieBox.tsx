@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
-import useAuth from 'hooks/useAuth';
+// import useAuth from 'hooks/useAuth';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import util from 'api/userFunctions';
@@ -61,7 +61,7 @@ export default function MovieBox({ item, typ }: { item: movi, typ: string }) {
   const theme = useTheme();
    const [modalStyle] = React.useState(getModalStyle);
    const router = useRouter();
-   const { isLoggedIn } = useAuth();
+  //  const { isLoggedIn } = useAuth();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
