@@ -147,7 +147,7 @@ export default function MovieBox({ item, typ }: { item: movi, typ: string }) {
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn || !isLoggedIn?<>
+          {/* {isLoggedIn || !isLoggedIn?<> */}
             <Button variant="contained" type="button" color='success' onClick={()=>(typ=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`))}>
             Watch
           </Button>
@@ -158,9 +158,12 @@ export default function MovieBox({ item, typ }: { item: movi, typ: string }) {
           <Box sx={{px:1}}/>
           <Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
-          </Button></>:<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
+          </Button>
+          {/* </>
+          
+          :<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
             Login to save
-          </Button>}
+          </Button>} */}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>
