@@ -147,7 +147,7 @@ export default function MovieBox({ item, typ }: { item: movi, typ: string }) {
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn?<>
+          {isLoggedIn || !isLoggedIn?<>
             <Button variant="contained" type="button" color='success' onClick={()=>(typ=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`))}>
             Watch
           </Button>
