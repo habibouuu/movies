@@ -1,5 +1,8 @@
 "use client"
-import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, Select, MenuItem } from '@mui/material';
+import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, FormControlLabel, Select, MenuItem, Switch } from '@mui/material';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import util from 'api/tvshows'
@@ -103,10 +106,13 @@ export default function Page() {
   const [season, setSeason] = useState(1)
   const [episode, setEpisode] = useState(1)
   const [autoPlay, setAutoPlay] = useState(false)
+  const [autoNextEnabled, setAutoNextEnabled] = useState(true)
   const [progressReady, setProgressReady] = useState(false)
+  const playerRef = useRef<HTMLIFrameElement>(null)
   const restoredShowId = useRef<string | null>(null)
   const ignoreEndedUntil = useRef(0)
   const lastHandledEpisode = useRef('')
+  const autoNextRef = useRef(true)
   const playbackRef = useRef({ season: 1, episode: 1, seasons: [] as Season[], episodes: [] as Episode[] })
 
   useEffect(() => {
@@ -163,6 +169,10 @@ export default function Page() {
   }, [season, episode, seasons, episodes])
 
   useEffect(() => {
+    autoNextRef.current = autoNextEnabled
+  }, [autoNextEnabled])
+
+  useEffect(() => {
     if (!progressReady || !params.id || restoredShowId.current !== params.id) return
     writeWatchProgress(params.id, { season, episode })
   }, [progressReady, params.id, season, episode])
@@ -173,12 +183,12 @@ export default function Page() {
     setAutoPlay(shouldAutoPlay)
   }, [])
 
-  const goToNextEpisode = useCallback(() => {
-    if (Date.now() < ignoreEndedUntil.current) return
+  const goToNextEpisode = useCallback((fromUser = false) => {
+    if (!fromUser && Date.now() < ignoreEndedUntil.current) return
 
     const current = playbackRef.current
     const episodeKey = `${current.season}-${current.episode}`
-    if (lastHandledEpisode.current === episodeKey) return
+    if (!fromUser && lastHandledEpisode.current === episodeKey) return
 
     lastHandledEpisode.current = episodeKey
     ignoreEndedUntil.current = Date.now() + 5000
@@ -196,6 +206,21 @@ export default function Page() {
 
     const nextSeason = current.seasons.find((s) => s.season_number > current.season)
     if (nextSeason) playEpisode(nextSeason.season_number, 1)
+  }, [playEpisode])
+
+  const goToPreviousEpisode = useCallback(() => {
+    const current = playbackRef.current
+    lastHandledEpisode.current = ''
+    ignoreEndedUntil.current = 0
+
+    if (current.episode > 1) {
+      playEpisode(current.season, current.episode - 1)
+      return
+    }
+
+    const previousSeasons = current.seasons.filter((s) => s.season_number < current.season)
+    const previousSeason = previousSeasons[previousSeasons.length - 1]
+    if (previousSeason) playEpisode(previousSeason.season_number, previousSeason.episode_count || 1)
   }, [playEpisode])
 
   useEffect(() => {
@@ -223,7 +248,7 @@ export default function Page() {
         payload?.type === 'ended' ||
         nearlyEnded
 
-      if (isEnded) goToNextEpisode()
+      if (isEnded && autoNextRef.current) goToNextEpisode()
     }
 
     window.addEventListener('message', onMessage)
@@ -241,8 +266,24 @@ export default function Page() {
 
   const runtime = show?.episode_run_time?.[0]
   const playerQuery = autoPlay
-    ? '?autoPlay=true&nextButton=true&autoNext=true'
-    : '?nextButton=true&autoNext=true'
+    ? '?autoPlay=true&nextButton=false&autoNext=false&fullscreenButton=false'
+    : '?nextButton=false&autoNext=false&fullscreenButton=false'
+
+  const enterFullscreen = () => {
+    const player = playerRef.current
+    if (!player) return
+    if (player.requestFullscreen) player.requestFullscreen()
+  }
+
+  const firstSeason = seasons[0]?.season_number || 1
+  const lastSeasonNumber = seasons[seasons.length - 1]?.season_number
+  const lastEpisodeInSeason =
+    episodes[episodes.length - 1]?.episode_number ||
+    seasons.find((s) => s.season_number === season)?.episode_count ||
+    episode
+  const isFirstEpisode = season <= firstSeason && episode <= 1
+  const isLastEpisode = (lastSeasonNumber == null || season >= lastSeasonNumber) && episode >= lastEpisodeInSeason
+  const currentEpisode = episodes.find((ep) => ep.episode_number === episode)
 
   return (
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
@@ -250,17 +291,64 @@ export default function Page() {
         <iframe
           // sandbox="allow-scripts allow-same-origin"
           // Download
+          ref={playerRef}
           key={`${params.id}-${season}-${episode}`}
           width="100%"
           height="100%"
           src={`https://vidfast.vc/tv/${params.id}/${season}/${episode}${playerQuery}`}
           title={(show?.name || fallbackTitle || '') + ''}
           frameBorder="0"
-          allow=""
+          allow="fullscreen"
           referrerPolicy=""
           allowFullScreen
         ></iframe>
       </Box>
+
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        flexWrap="wrap"
+        useFlexGap
+        sx={{ pt: 2, pb: 1 }}
+      >
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<SkipPreviousIcon />}
+          disabled={loading || isFirstEpisode}
+          onClick={goToPreviousEpisode}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outlined"
+          size="small"
+          endIcon={<SkipNextIcon />}
+          disabled={loading || isLastEpisode}
+          onClick={() => goToNextEpisode(true)}
+        >
+          Next
+        </Button>
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              checked={autoNextEnabled}
+              onChange={(event) => setAutoNextEnabled(event.target.checked)}
+            />
+          }
+          label="Auto Next"
+        />
+        <Button variant="outlined" size="small" startIcon={<FullscreenIcon />} onClick={enterFullscreen}>
+          Fullscreen
+        </Button>
+        {currentEpisode && (
+          <Typography variant="body2" color="text.secondary">
+            S{season}:E{episode} {currentEpisode.name}
+          </Typography>
+        )}
+      </Stack>
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>

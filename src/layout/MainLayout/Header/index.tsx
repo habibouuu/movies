@@ -9,7 +9,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import useConfig from 'hooks/useConfig';
 import LogoSection from '../LogoSection';
 
-import ProfileSection from './ProfileSection';
+// import ProfileSection from './ProfileSection';
 
 import NotificationSection from './NotificationSection';
 
@@ -17,33 +17,33 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 // assets
 import { IconMenu2 } from '@tabler/icons-react';
-import util from 'api/user'
+// import util from 'api/user'
 // types
 import { MenuOrientation, ThemeMode } from 'types/config';
-import {UserProfile} from 'types/user-profile';
-import { useEffect, useState } from 'react';
-import { Button } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import useAuth from 'hooks/useAuth';
+// import {UserProfile} from 'types/user-profile';
+// import { useEffect, useState } from 'react';
+// import { Button } from '@mui/material';
+// import { useRouter } from 'next/navigation';
+// import useAuth from 'hooks/useAuth';
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = () => {
   const theme = useTheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
-  const navigate = useRouter();
+  // const navigate = useRouter();
   const { menuOrientation } = useConfig();
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
-  const { isLoggedIn } = useAuth();
+  // const { isLoggedIn } = useAuth();
 
   const isHorizontal = menuOrientation === MenuOrientation.HORIZONTAL && !downMD;
-  const [user, setUser] = useState<UserProfile>();
-  useEffect(()=>{
-    (async () =>{
-      const person : any = await util.getUser();
-      if(person) setUser(person);
-    })()
-  },[])
+  // const [user, setUser] = useState<UserProfile>();
+  // useEffect(()=>{
+  //   (async () =>{
+  //     const person : any = await util.getUser();
+  //     if(person) setUser(person);
+  //   })()
+  // },[])
   return (
     <>
       {/* logo & toggler button */}
@@ -100,7 +100,7 @@ const Header = () => {
       </Box>
 <Box sx={{ flexGrow: 1 }} />
       {/* profile */}
-      {isLoggedIn?<ProfileSection user={user?user:''}/>:<Button onClick={()=>navigate.push('/login')} variant='contained' color='error'>LOGIN</Button>}
+      {/* {isLoggedIn?<ProfileSection user={user?user:''}/>:<Button onClick={()=>navigate.push('/login')} variant='contained' color='error'>LOGIN</Button>} */}
 
       {/* mobile header */}
       {/* <Box sx={{ display: { xs: 'block', sm: 'none' } }}>

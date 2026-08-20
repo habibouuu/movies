@@ -1,7 +1,8 @@
 "use client"
-import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating } from '@mui/material';
+import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button } from '@mui/material';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import util from 'api/movies'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
 
@@ -47,6 +48,13 @@ export default function Page() {
   const [movie, setMovie] = useState<MovieDetails | null>(null)
   const [similar, setSimilar] = useState<SimilarMovie[]>([])
   const [loading, setLoading] = useState(true)
+  const playerRef = useRef<HTMLIFrameElement>(null)
+
+  const enterFullscreen = () => {
+    const player = playerRef.current
+    if (!player) return
+    if (player.requestFullscreen) player.requestFullscreen()
+  }
 
   useEffect(() => {
     if (!params.id) return
@@ -70,17 +78,24 @@ export default function Page() {
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
       <Box sx={{ height: { xs: '400px', md: '500px', lg: '630px' }, width: '100%' }}>
         <iframe
-          // sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin"
+          ref={playerRef}
           width="100%"
           height="100%"
-          src={`https://vidfast.vc/movie/${params.id}`}
+          src={`https://vidfast.vc/movie/${params.id}?nextButton=false&autoNext=false&fullscreenButton=false`}
           title={(movie?.title || fallbackTitle || '') + ''}
           frameBorder="0"
-          allow=""
+          allow="fullscreen"
           referrerPolicy=""
           allowFullScreen
         ></iframe>
       </Box>
+
+      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap sx={{ pt: 2, pb: 1 }}>
+        <Button variant="outlined" size="small" startIcon={<FullscreenIcon />} onClick={enterFullscreen}>
+          Fullscreen
+        </Button>
+      </Stack>
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
