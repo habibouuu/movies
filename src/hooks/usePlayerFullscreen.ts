@@ -64,7 +64,8 @@ export default function usePlayerFullscreen() {
     if (!container) return
 
     const iframe = container.querySelector('iframe')
-    const targets = [container, iframe].filter((el): el is HTMLElement => Boolean(el))
+    const targets: HTMLElement[] = [container]
+    if (iframe) targets.push(iframe)
 
     for (const target of targets) {
       try {
