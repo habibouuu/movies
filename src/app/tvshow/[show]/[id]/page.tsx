@@ -1,12 +1,15 @@
 "use client"
-import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, FormControlLabel, Select, MenuItem, Switch } from '@mui/material';
+import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, FormControlLabel, Select, MenuItem, Switch, IconButton } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import util from 'api/tvshows'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
+import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
 
 type WatchProgress = {
   season: number
@@ -108,7 +111,7 @@ export default function Page() {
   const [autoPlay, setAutoPlay] = useState(false)
   const [autoNextEnabled, setAutoNextEnabled] = useState(true)
   const [progressReady, setProgressReady] = useState(false)
-  const playerRef = useRef<HTMLIFrameElement>(null)
+  const { containerRef, cssFullscreen, enterFullscreen, exitFullscreen } = usePlayerFullscreen()
   const restoredShowId = useRef<string | null>(null)
   const ignoreEndedUntil = useRef(0)
   const lastHandledEpisode = useRef('')
@@ -269,12 +272,6 @@ export default function Page() {
     ? '?autoPlay=true&nextButton=false&autoNext=false&fullscreenButton=false'
     : '?nextButton=false&autoNext=false&fullscreenButton=false'
 
-  const enterFullscreen = () => {
-    const player = playerRef.current
-    if (!player) return
-    if (player.requestFullscreen) player.requestFullscreen()
-  }
-
   const firstSeason = seasons[0]?.season_number || 1
   const lastSeasonNumber = seasons[seasons.length - 1]?.season_number
   const lastEpisodeInSeason =
@@ -287,21 +284,56 @@ export default function Page() {
 
   return (
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
-      <Box sx={{ height: { xs: '400px', md: '500px', lg: '630px' }, width: '100%' }}>
+      <Box
+        ref={containerRef}
+        sx={{
+          position: 'relative',
+          height: { xs: '400px', md: '500px', lg: '630px' },
+          width: '100%',
+          bgcolor: '#000',
+          '&:fullscreen, &:-webkit-full-screen': {
+            width: '100%',
+            height: '100%'
+          },
+          ...(cssFullscreen && {
+            position: 'fixed',
+            inset: 0,
+            zIndex: 2000,
+            width: '100%',
+            height: '100%',
+            borderRadius: 0
+          })
+        }}
+      >
         <iframe
           // sandbox="allow-scripts allow-same-origin"
           // Download
-          ref={playerRef}
           key={`${params.id}-${season}-${episode}`}
-          width="100%"
-          height="100%"
           src={`https://vidfast.vc/tv/${params.id}/${season}/${episode}${playerQuery}`}
           title={(show?.name || fallbackTitle || '') + ''}
           frameBorder="0"
-          allow="fullscreen"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           referrerPolicy=""
           allowFullScreen
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
         ></iframe>
+        {cssFullscreen && (
+          <IconButton
+            aria-label="Exit fullscreen"
+            onClick={exitFullscreen}
+            sx={{
+              position: 'absolute',
+              top: { xs: 'max(12px, env(safe-area-inset-top))', sm: 8 },
+              right: 8,
+              zIndex: 1,
+              color: '#fff',
+              bgcolor: 'rgba(0,0,0,0.55)',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }
+            }}
+          >
+            <FullscreenExitIcon />
+          </IconButton>
+        )}
       </Box>
 
       <Stack
@@ -312,6 +344,9 @@ export default function Page() {
         useFlexGap
         sx={{ pt: 2, pb: 1 }}
       >
+        <Button variant="outlined" size="small" startIcon={<PlayArrowIcon />} onClick={() => setAutoPlay(true)}>
+          Play
+        </Button>
         <Button
           variant="outlined"
           size="small"

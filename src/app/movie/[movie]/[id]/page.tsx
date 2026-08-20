@@ -1,10 +1,13 @@
 "use client"
-import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button } from '@mui/material';
+import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, IconButton } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useParams } from 'next/navigation'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import util from 'api/movies'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
+import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
 
 type MovieDetails = {
   id: number
@@ -48,13 +51,8 @@ export default function Page() {
   const [movie, setMovie] = useState<MovieDetails | null>(null)
   const [similar, setSimilar] = useState<SimilarMovie[]>([])
   const [loading, setLoading] = useState(true)
-  const playerRef = useRef<HTMLIFrameElement>(null)
-
-  const enterFullscreen = () => {
-    const player = playerRef.current
-    if (!player) return
-    if (player.requestFullscreen) player.requestFullscreen()
-  }
+  const [autoPlay, setAutoPlay] = useState(false)
+  const { containerRef, cssFullscreen, enterFullscreen, exitFullscreen } = usePlayerFullscreen()
 
   useEffect(() => {
     if (!params.id) return
@@ -74,24 +72,66 @@ export default function Page() {
     params.movie &&
     params.movie.split('%20').join(' ').split('%3A').join(':').split('%3').join(': ').split('%26').join('&')
 
+  const playerQuery = autoPlay
+    ? '?autoPlay=true&nextButton=false&autoNext=false&fullscreenButton=false'
+    : '?nextButton=false&autoNext=false&fullscreenButton=false'
+
   return (
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
-      <Box sx={{ height: { xs: '400px', md: '500px', lg: '630px' }, width: '100%' }}>
+      <Box
+        ref={containerRef}
+        sx={{
+          position: 'relative',
+          height: { xs: '400px', md: '500px', lg: '630px' },
+          width: '100%',
+          bgcolor: '#000',
+          '&:fullscreen, &:-webkit-full-screen': {
+            width: '100%',
+            height: '100%'
+          },
+          ...(cssFullscreen && {
+            position: 'fixed',
+            inset: 0,
+            zIndex: 2000,
+            width: '100%',
+            height: '100%',
+            borderRadius: 0
+          })
+        }}
+      >
         <iframe
           // sandbox="allow-scripts allow-same-origin"
-          ref={playerRef}
-          width="100%"
-          height="100%"
-          src={`https://vidfast.vc/movie/${params.id}?nextButton=false&autoNext=false&fullscreenButton=false`}
+          src={`https://vidfast.vc/movie/${params.id}${playerQuery}`}
           title={(movie?.title || fallbackTitle || '') + ''}
           frameBorder="0"
-          allow="fullscreen"
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
           referrerPolicy=""
           allowFullScreen
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
         ></iframe>
+        {cssFullscreen && (
+          <IconButton
+            aria-label="Exit fullscreen"
+            onClick={exitFullscreen}
+            sx={{
+              position: 'absolute',
+              top: { xs: 'max(12px, env(safe-area-inset-top))', sm: 8 },
+              right: 8,
+              zIndex: 1,
+              color: '#fff',
+              bgcolor: 'rgba(0,0,0,0.55)',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }
+            }}
+          >
+            <FullscreenExitIcon />
+          </IconButton>
+        )}
       </Box>
 
       <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap sx={{ pt: 2, pb: 1 }}>
+        <Button variant="outlined" size="small" startIcon={<PlayArrowIcon />} onClick={() => setAutoPlay(true)}>
+          Play
+        </Button>
         <Button variant="outlined" size="small" startIcon={<FullscreenIcon />} onClick={enterFullscreen}>
           Fullscreen
         </Button>
