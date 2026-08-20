@@ -75,7 +75,7 @@ export default function Page() {
           height="100%"
           src={`https://vidfast.vc/movie/${params.id}`}
           title={(movie?.title || fallbackTitle || '') + ''}
-       
+          frameBorder="0"
           allow=""
           referrerPolicy=""
           allowFullScreen

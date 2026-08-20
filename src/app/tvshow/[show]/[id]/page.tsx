@@ -255,7 +255,7 @@ export default function Page() {
           height="100%"
           src={`https://vidfast.vc/tv/${params.id}/${season}/${episode}${playerQuery}`}
           title={(show?.name || fallbackTitle || '') + ''}
-      
+          frameBorder="0"
           allow=""
           referrerPolicy=""
           allowFullScreen
