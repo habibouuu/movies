@@ -78,7 +78,7 @@ export default function Page() {
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
       <Box sx={{ height: { xs: '400px', md: '500px', lg: '630px' }, width: '100%' }}>
         <iframe
-          sandbox="allow-scripts allow-same-origin"
+          // sandbox="allow-scripts allow-same-origin"
           ref={playerRef}
           width="100%"
           height="100%"
