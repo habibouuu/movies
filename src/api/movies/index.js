@@ -2,7 +2,6 @@
 import axios from 'axios';
 async function getTrendingMov(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/movie/popular?language=en-US&page=1`,
@@ -27,7 +26,6 @@ async function getTrendingMov(){
 }
 async function getTopratedMov(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`,
@@ -52,7 +50,6 @@ async function getTopratedMov(){
 }
 async function getNowplayingMov(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1`,
@@ -201,9 +198,59 @@ async function searchMovies(page,query){
         data.total_pages-=1
         return data
 }
-async function watchMovies(id){
+async function getMovieDetails(id){
     let data
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/movie/${id}?language=en-US`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            data = res.data
+        })
+        .catch(err => console.error(err));
+       
+        return data
+}
 
+function sortByNewestRelease(items = []) {
+    return items.slice().sort((a, b) => {
+        const dateA = Date.parse(a.release_date || a.first_air_date || '')
+        const dateB = Date.parse(b.release_date || b.first_air_date || '')
+        const hasDateA = Number.isFinite(dateA)
+        const hasDateB = Number.isFinite(dateB)
+
+        if (hasDateA && hasDateB) return dateB - dateA
+        if (hasDateA !== hasDateB) return hasDateA ? -1 : 1
+        return 0
+    })
+}
+
+async function getSimilarMovies(id){
+    let data
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/movie/${id}/similar?language=en-US&page=1`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            data = sortByNewestRelease(res.data.results)
+        })
+        .catch(err => console.error(err));
+       
+        return data
 }
 
 export default {
@@ -214,5 +261,7 @@ export default {
     getDramaMov,
     getActionMov,
     getUpcomingMov,
-    searchMovies
+    searchMovies,
+    getMovieDetails,
+    getSimilarMovies
 }

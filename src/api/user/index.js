@@ -5,7 +5,7 @@ async function getUser(){
    
     const { data: { user } } = await supabase.auth.getUser()
     if(user){
-        const { data: userInfo, error } = await supabase
+        const { data: userInfo } = await supabase
     .from('userInfo')
     .select('*')
     .eq('id', user.id)
@@ -27,7 +27,7 @@ async function getSession(){
 
 async function login(email, password){
 
-    let { data, error } = await supabase.auth.signInWithPassword({
+    let { data } = await supabase.auth.signInWithPassword({
         email: email,
         password: password
     })
@@ -39,13 +39,13 @@ async function login(email, password){
 
 async function logout(){
 
-    let { error } = await supabase.auth.signOut()
+    await supabase.auth.signOut()
 
 }
 
 async function signup(email, password, firstname, lastname){
     
-let { data, error } = await supabase.auth.signUp({
+let { data } = await supabase.auth.signUp({
     email: email,
     password: password,
     options: {
@@ -67,7 +67,7 @@ async function changePassword(email, password){
 
     
     
-const { data, error } = await supabase.auth.updateUser({
+await supabase.auth.updateUser({
     email: email,
     password: password,
     data: { hello: 'world' }

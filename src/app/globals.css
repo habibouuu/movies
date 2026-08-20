@@ -132,6 +132,7 @@ html[dir='rtl'] .apexcharts-tooltip .apexcharts-tooltip-marker {
 
 .preBuildDashBoard-slider {
   overflow: hidden;
+  position: relative;
   .slider {
     .slide {
       opacity: 0.5;

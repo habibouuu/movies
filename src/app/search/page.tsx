@@ -5,7 +5,7 @@ import util from 'api/movies'
 import MovieBox from 'components/app/MovieBox';
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
-export default function page() {
+export default function Page() {
      
     type movi = 
           {
@@ -73,7 +73,7 @@ export default function page() {
       </Box>
       <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:{xs:1, md: 3}, flexWrap: 'wrap'}}>
 
-        {Movies.map((elem:any,index:number)=><MovieBox typ={elem.title?'movies':'shows'} item ={elem}/>)}
+        {Movies.map((elem:any,index:number)=><MovieBox key={elem.id ?? index} typ={elem.title?'movies':'shows'} item ={elem}/>)}
         
       </Box>
       <Pagination count={totalPages} page={page} onChange={handleChange}></Pagination>

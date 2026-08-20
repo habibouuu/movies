@@ -7,7 +7,7 @@ module.exports = {
     "env": {
     "node": true,
     "es6": true,
-    "es7": true,
+    "es2017": true,
   },
 
   "parserOptions": {

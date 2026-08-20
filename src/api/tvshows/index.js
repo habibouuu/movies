@@ -3,7 +3,6 @@ import axios from 'axios'
 
 async function getTrendingShow(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/tv/popular?language=en-US&page=1`,
@@ -28,7 +27,6 @@ async function getTrendingShow(){
 }
 async function getTopratedShow(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1`,
@@ -53,7 +51,6 @@ async function getTopratedShow(){
 }
 async function getNowplayingShow(){
     let data
-    let movie
     const options = {
         method: 'GET',
         url: `https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1`,
@@ -142,11 +139,90 @@ async function getActionShow(page){
 }
 
 
+async function getShowDetails(id){
+    let data
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/tv/${id}?language=en-US`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            data = res.data
+        })
+        .catch(err => console.error(err));
+       
+        return data
+}
+
+function sortByNewestRelease(items = []) {
+    return items.slice().sort((a, b) => {
+        const dateA = Date.parse(a.release_date || a.first_air_date || '')
+        const dateB = Date.parse(b.release_date || b.first_air_date || '')
+        const hasDateA = Number.isFinite(dateA)
+        const hasDateB = Number.isFinite(dateB)
+
+        if (hasDateA && hasDateB) return dateB - dateA
+        if (hasDateA !== hasDateB) return hasDateA ? -1 : 1
+        return 0
+    })
+}
+
+async function getSimilarShows(id){
+    let data
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/tv/${id}/similar?language=en-US&page=1`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            data = sortByNewestRelease(res.data.results)
+        })
+        .catch(err => console.error(err));
+       
+        return data
+}
+
+async function getSeasonDetails(id, seasonNumber){
+    let data
+    const options = {
+        method: 'GET',
+        url: `https://api.themoviedb.org/3/tv/${id}/season/${seasonNumber}?language=en-US`,
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTVmOWQzZjFlODc0ZmJlYTYwNzg0OTRhNTExYTZkNCIsIm5iZiI6MTY4NzgxNzY1Mi41MjE5OTk4LCJzdWIiOiI2NDlhMGRiNGZlZDU5NzAxMmNlYjVlYzgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.ly6wetUFMFN2skJcdXUgYJNs4I_Y4CJr8GSAD_ZifeU'
+        }
+      };
+      
+     await axios
+        .request(options)
+        .then(res => {
+            data = res.data
+        })
+        .catch(err => console.error(err));
+       
+        return data
+}
+
 export default {
     getTrendingShow,
     getTopratedShow,
     getNowplayingShow,
     getComedyShow,
     getDramaShow,
-    getActionShow
+    getActionShow,
+    getShowDetails,
+    getSimilarShows,
+    getSeasonDetails
 }

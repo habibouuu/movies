@@ -23,7 +23,6 @@ import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
-import useAuth from 'hooks/useAuth';
 // assets
 import CloseIcon from '@mui/icons-material/Close';
 import { useRouter } from 'next/navigation';
@@ -50,7 +49,6 @@ const HeaderSection = ({headMovie}:{headMovie:any}) => {
 
   const [modalStyle] = React.useState(getModalStyle);
   const router = useRouter()
-    const {isLoggedIn} = useAuth();
   const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
       setOpen(true);
@@ -137,7 +135,8 @@ const HeaderSection = ({headMovie}:{headMovie:any}) => {
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn?<>
+          {/* {isLoggedIn? */}
+          <>
             <Button variant="contained" type="button" color='success' onClick={()=>(router.push(`/movie/${item.name?item.name:item.title}/${item.id}`))}>
             Watch
           </Button>
@@ -149,9 +148,10 @@ const HeaderSection = ({headMovie}:{headMovie:any}) => {
           <Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>
-          </>:<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
-            Login to save
-          </Button>}
+          </>
+          {/* // :<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
+          //   Login to save
+          // </Button> */}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>

@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import util from 'api/userFunctions';
 import UserMovieBox from 'components/app/UserMovieBox';
 
-export default function page() {
+export default function Page() {
     type movi = 
           {
             "adult": boolean,
@@ -50,7 +50,7 @@ export default function page() {
     <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', gap:'30px' , justifyContent:'center',alignItems:'center'}}>
       <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:{xs:1, md: 3}, flexWrap: 'wrap'}}>
 
-        {Movies.map((elem:any,index:number)=><UserMovieBox typee={elem.title?'movies':'shows'} item ={elem} setDD={setDD} typ='favorites'/>)}
+        {Movies.map((elem:any,index:number)=><UserMovieBox key={elem.id ?? index} typee={elem.title?'movies':'shows'} item ={elem} setDD={setDD} typ='favorites'/>)}
         
       </Box>
       <Pagination count={totalPages} page={page} onChange={handleChange}></Pagination>

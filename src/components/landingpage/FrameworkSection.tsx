@@ -1,3 +1,5 @@
+'use client'
+
 // material-ui
 
 import Box from '@mui/material/Box';
@@ -5,6 +7,8 @@ import Typography from '@mui/material/Typography';
 
 // third-party
 import Slider, { Settings } from 'react-slick';
+
+import { CarouselNextArrow, CarouselPrevArrow } from 'components/app/CarouselArrows';
 
 
 
@@ -98,6 +102,9 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
     dots: false,
     className: 'center',
     infinite: true,
+    arrows: true,
+    nextArrow: <CarouselNextArrow />,
+    prevArrow: <CarouselPrevArrow />,
     centerPadding: '60px',
     slidesToShow: 7,
     slidesToScroll: 7,
@@ -109,7 +116,8 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
         settings: {
           slidesToShow: 6,
           slidesToScroll: 6,
-          dots: false
+          dots: false,
+          arrows: true
         }
       },
       {
@@ -117,7 +125,8 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
         settings: {
           slidesToShow: 4,
           slidesToScroll: 4,
-          dots: false
+          dots: false,
+          arrows: true
         }
       },
       {
@@ -125,7 +134,8 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
         settings: {
           slidesToShow: 3,
           slidesToScroll: 3,
-          dots: false
+          dots: false,
+          arrows: true
         }
       },
       {
@@ -133,7 +143,8 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
         settings: {
           slidesToShow: 2,
           slidesToScroll: 2,
-          dots: false
+          dots: false,
+          arrows: true
         }
       }
     ]
@@ -144,11 +155,18 @@ const FrameworkSection = ({title, movies, typ}:{title:string, movies:movi[], typ
       <Box
         sx={{
           overflow: 'hidden',
+          position: 'relative',
           div: {
             textAlign: 'center'
           },
           '.slick-track': {
             display: { xs: 'flex', xl: 'inherit' }
+          },
+          '& .slick-slider': {
+            position: 'relative'
+          },
+          '& .slick-list': {
+            overflow: 'hidden'
           },
           '& .slick-dots': {
             position: 'initial',

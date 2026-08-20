@@ -24,13 +24,12 @@ import util from 'api/userFunctions';
 import { openSnackbar } from 'store/slices/snackbar';
 import { dispatch } from 'store';
 import { useRouter } from 'next/navigation';
-import useAuth from 'hooks/useAuth';
 
 // third-party
 import { Carousel } from 'react-responsive-carousel';
 
 // assets
-import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react';
+import { CarouselNextArrow, CarouselPrevArrow } from 'components/app/CarouselArrows';
 
 const Images = styled('img')({
   width: '100%',
@@ -40,81 +39,6 @@ const Images = styled('img')({
   objectFit: 'cover'
 });
 
-function SampleNextArrow(props: any) {
-  const theme = useTheme();
-  const { onClickHandler } = props;
-
-  return (
-    <IconButton
-      onClick={onClickHandler}
-      sx={{
-        position: 'absolute',
-        zIndex: 2,
-        top: 'calc(50% - 70px)',
-        cursor: 'pointer',
-        bgcolor: `${theme.palette.background.paper} !important`,
-        width: { xs: '40px !important', xl: '65px !important' },
-        height: { xs: '40px !important', xl: '65px !important' },
-        boxShadow: '0px 24px 38px rgba(9, 15, 37, 0.07)',
-        '&:after': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          transform: 'scale(9)'
-        },
-        svg: {
-          height: { md: 20, lg: 40, xl: '40px' },
-          width: { md: 20, lg: 40, xl: '40px' }
-        },
-        right: { xs: '50px', md: '80px', lg: '120px', xl: '220px' }
-      }}
-      aria-label="button"
-    >
-      <IconChevronRight fontSize={25} color={theme.palette.grey[900]} />
-    </IconButton>
-  );
-}
-
-function SamplePrevArrow(props: any) {
-  const theme = useTheme();
-  const { onClickHandler } = props;
-
-  return (
-    <IconButton
-      onClick={onClickHandler}
-      sx={{
-        position: 'absolute',
-        zIndex: 2,
-        top: 'calc(50% - 70px)',
-        cursor: 'pointer',
-        bgcolor: `${theme.palette.background.paper} !important`,
-        width: { xs: '40px ', xl: '65px !important' },
-        height: { xs: '40px', xl: '65px !important' },
-        boxShadow: '0px 24px 38px rgba(9, 15, 37, 0.07)',
-        '&:after': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          transform: 'scale(9)'
-        },
-        svg: {
-          height: { md: 20, lg: 40, xl: '40px' },
-          width: { md: 20, lg: 40, xl: '40px' }
-        },
-        left: { xs: '50px', md: '80px', lg: '120px', xl: '220px' }
-      }}
-      aria-label="button"
-    >
-      <IconChevronLeft fontSize={25} color={theme.palette.grey[900]} />
-    </IconButton>
-  );
-}
 
 
 
@@ -166,7 +90,6 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
   const [item,setItem] = React.useState<movi|undefined>();
   const [modalStyle] = React.useState(getModalStyle);
-  const {isLoggedIn} = useAuth();
   const router = useRouter();
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
@@ -297,7 +220,8 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
       };
       return (
         <Grid container justifyContent="flex-start">
-          {isLoggedIn?<>
+          {/* {isLoggedIn? */}
+          <>
             <Button variant="contained" type="button" color='success' onClick={()=>(typ=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`))}>
             Watch
           </Button>
@@ -308,9 +232,11 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
           <Box sx={{px:1}}/>
           <Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
-          </Button> </>:<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
-            Login to save
-          </Button>}
+          </Button> </>
+          
+          {/* // :<Button variant="contained" type="button" color='secondary' onClick={()=>router.push('/login')}>
+          //   Login to save
+          // </Button>} */}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>
@@ -333,9 +259,8 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
           <Box
             className="preBuildDashBoard-slider"
             sx={{
-              direction: 'initial','.css-1i6hmxt-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '0'},ml:5,mt:1},
-              '.css-1ohaq49-MuiButtonBase-root-MuiIconButton-root::after':{width:{xs: '0'},mr:5,mt:1},
-              
+              direction: 'initial',
+              position: 'relative',
               '.slider': { height: { xs: 'auto' }, '& .slide:not(.selected)': { transformOrigin: 'center !important' } }
             }}
           >
@@ -351,11 +276,11 @@ const PreBuildDashBoard = ({movies, title, typ}:{movies:movi[],title:string, typ
               swipeable={true}
               autoPlay={true}
               interval={3300}
-              renderArrowPrev={(onClickHandler, hasPrev, label) =>
-                hasPrev && <SamplePrevArrow onClickHandler={onClickHandler} hasPrev={hasPrev} label={label} />
+              renderArrowPrev={(onClickHandler, hasPrev) =>
+                hasPrev ? <CarouselPrevArrow onClickHandler={onClickHandler} /> : null
               }
-              renderArrowNext={(onClickHandler, hasNext, label) =>
-                hasNext && <SampleNextArrow onClickHandler={onClickHandler} hasNext={hasNext} label={label} />
+              renderArrowNext={(onClickHandler, hasNext) =>
+                hasNext ? <CarouselNextArrow onClickHandler={onClickHandler} /> : null
               }
             >
               {movies && movies.map((elem,index)=>{
