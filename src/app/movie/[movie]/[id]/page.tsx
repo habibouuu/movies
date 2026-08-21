@@ -10,7 +10,9 @@ import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import util from 'api/movies'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
+import UserSaveActions from 'components/app/UserSaveActions'
 import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
+import userLists from 'api/userFunctions'
 
 const SEEK_STEP = 10
 
@@ -163,11 +165,11 @@ export default function Page() {
     handleSeek(playbackRef.current.currentTime + delta)
   }
 
-  const handleVolumeChange = (_event: Event, value: number | number[]) => {
-    const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
-    setVolume(nextVolume)
-    sendPlayerCommand('volume', { level: nextVolume })
-  }
+  // const handleVolumeChange = (_event: Event, value: number | number[]) => {
+  //   const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
+  //   setVolume(nextVolume)
+  //   sendPlayerCommand('volume', { level: nextVolume })
+  // }
 
   const handleSeekChange = (_event: Event, value: number | number[]) => {
     const nextTime = Array.isArray(value) ? value[0] : value
@@ -196,7 +198,10 @@ export default function Page() {
         util.getMovieDetails(params.id),
         util.getSimilarMovies(params.id)
       ])
-      if (details) setMovie(details)
+      if (details) {
+        setMovie(details)
+        userLists.addWatchHistory(details)
+      }
       if (similarMovies) setSimilar(similarMovies)
       setAutoPlay(false)
       setResumeAt(0)
@@ -425,13 +430,13 @@ export default function Page() {
           <Button variant="outlined" size="small" startIcon={<Forward10Icon />} onClick={() => handleSkip(SEEK_STEP)}>
             +10s
           </Button>
-          <Slider
+          {/* <Slider
             size="small"
             aria-label="Volume"
             value={Math.round(volume * 100)}
             onChange={handleVolumeChange}
             sx={{ width: 88, mx: 0.5 }}
-          />
+          /> */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 84, textAlign: 'center' }}>
             {formatTime(currentTime)} / {formatTime(mediaDuration)}
           </Typography>
@@ -525,6 +530,7 @@ export default function Page() {
               <Typography variant="body1" color="text.secondary">
                 {movie?.overview || 'No overview available.'}
               </Typography>
+              {movie && <UserSaveActions item={movie} mediaType="movie" />}
             </Box>
           </Box>
 

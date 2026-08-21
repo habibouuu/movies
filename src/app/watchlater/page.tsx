@@ -1,59 +1,13 @@
-"use client"
-import { Box, Pagination} from '@mui/material'
-import React, {useEffect, useState} from 'react'
-import util from 'api/userFunctions'
-import UserMovieBox from 'components/app/UserMovieBox';
+'use client'
+
+import UserLibraryPage from 'components/app/UserLibraryPage'
 
 export default function Page() {
-    type movi = 
-          {
-            "adult": boolean,
-            "backdrop_path": string,
-            "genre_ids": number[],
-            "id": number,
-            "origin_country": string[],
-            "original_language": string,
-            "original_name": string,
-            "overview": string,
-            "popularity": number,
-            "poster_path":string,
-            "first_air_date": Date,
-            "name": string,
-            "vote_average": number,
-            "vote_count": number,
-            "original_title": string,
-            "release_date": Date,
-            "title": string,
-            "video": boolean
-          };
-    const [Movies, setMovies] = useState<movi[]>([]);
-    const [totalPages, setTotal] = useState<number>(1);
-    const [page,setPage] = useState<number>(1)
-    const [dd,setDD] = useState(true)
-    useEffect(()=>{
-        (async()=>{
-            const a:any= await util.getUserMovies(page);
-            console.log(a.watchlater.movies)
-            if(a) {
-                setMovies(a.watchlater.movies);
-                setTotal(Math.ceil(a.watchlater.total/20));
-
-            }
-        })();
-        setDD(false)
-    },[page, dd])
-    console.log(dd)
-    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-      };
   return (
-    <div style={{width:'100%', height:'100%', display:'flex', flexDirection:'column', gap:'30px' , justifyContent:'center',alignItems:'center'}}>
-      <Box sx={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', gap:{xs:1, md: 3}, flexWrap: 'wrap'}}>
-
-        {Movies.map((elem:any,index:number)=><UserMovieBox key={elem.id ?? index} typee={elem.title?'movies':'shows'} setDD={setDD} item ={elem} typ='watchlater'/>)}
-        
-      </Box>
-      <Pagination count={totalPages} page={page} onChange={handleChange}></Pagination>
-    </div>
+    <UserLibraryPage
+      list="watchlater"
+      title="Watch Later"
+      emptyText="Your Watch Later list is empty."
+    />
   )
 }

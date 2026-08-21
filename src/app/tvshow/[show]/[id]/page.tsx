@@ -12,7 +12,9 @@ import { useParams } from 'next/navigation'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import util from 'api/tvshows'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
+import UserSaveActions from 'components/app/UserSaveActions'
 import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
+import userLists from 'api/userFunctions'
 
 const SEEK_STEP = 10
 
@@ -226,11 +228,11 @@ export default function Page() {
     handleSeek(mediaRef.current.currentTime + delta)
   }
 
-  const handleVolumeChange = (_event: Event, value: number | number[]) => {
-    const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
-    setVolume(nextVolume)
-    sendPlayerCommand('volume', { level: nextVolume })
-  }
+  // const handleVolumeChange = (_event: Event, value: number | number[]) => {
+  //   const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
+  //   setVolume(nextVolume)
+  //   sendPlayerCommand('volume', { level: nextVolume })
+  // }
 
   const handleSeekChange = (_event: Event, value: number | number[]) => {
     const nextTime = Array.isArray(value) ? value[0] : value
@@ -343,6 +345,11 @@ export default function Page() {
     if (!progressReady || !params.id || restoredShowId.current !== params.id) return
     writeWatchProgress(params.id, { season, episode })
   }, [progressReady, params.id, season, episode])
+
+  useEffect(() => {
+    if (!show?.id || !progressReady) return
+    userLists.addWatchHistory(show, { season, episode })
+  }, [show, season, episode, progressReady])
 
   const playEpisode = useCallback((nextSeason: number, nextEpisode: number, shouldAutoPlay = true) => {
     setSeason(nextSeason)
@@ -635,13 +642,13 @@ export default function Page() {
             }
             label="Auto Next"
           />
-          <Slider
+          {/* <Slider
             size="small"
             aria-label="Volume"
             value={Math.round(volume * 100)}
             onChange={handleVolumeChange}
             sx={{ width: 88, mx: 0.5 }}
-          />
+          /> */}
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 84, textAlign: 'center' }}>
             {formatTime(currentTime)} / {formatTime(mediaDuration)}
           </Typography>
@@ -790,6 +797,7 @@ export default function Page() {
               <Typography variant="body1" color="text.secondary">
                 {show?.overview || 'No overview available.'}
               </Typography>
+              {show && <UserSaveActions item={show} mediaType="tv" />}
             </Box>
           </Box>
 

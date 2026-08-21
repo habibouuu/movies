@@ -189,6 +189,27 @@ export default function UserMovieBox({ item, typ, typee, setDD }: { item: movi, 
           setDD(true)
         },800)
       };
+      const handleRemoveHistory = (elem:any) => {
+        (async ()=>{
+          await util.deleteWatchHistory(elem)
+        })();
+
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: 'Removed from history',
+            variant: 'alert',
+            alert: {
+              color: 'success'
+            },
+            close: false
+          })
+        );
+        setTimeout(()=>{
+          handleClose();
+          setDD(true)
+        },800)
+      };
       return (
         <Grid container justifyContent="flex-start">
           <Button variant="contained" type="button" color='success' onClick={()=>typee=='movies'?router.push(`/movie/${item.name?item.name:item.title}/${item.id}`):router.push(`/tvshow/${item.name?item.name:item.title}/${item.id}`)}>
@@ -206,6 +227,14 @@ export default function UserMovieBox({ item, typ, typee, setDD }: { item: movi, 
           </Button>:<Button variant="contained" type="button" color='warning' onClick={()=>handleFavorites(item)}>
             Add to Favorites
           </Button>}
+          {typ=='history' && (
+            <>
+              <Box sx={{px:1}}/>
+              <Button variant="contained" type="button" color='error' onClick={()=>handleRemoveHistory(item)}>
+                Remove From History
+              </Button>
+            </>
+          )}
           <Modal open={open} onClose={handleClose} aria-labelledby="simple-modal-title" aria-describedby="simple-modal-description">
             <Body item={item} modalStyle={modalStyle} handleClose={handleClose} />
           </Modal>
