@@ -1,8 +1,13 @@
 "use client"
-import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, FormControlLabel, Select, MenuItem, Switch, IconButton } from '@mui/material';
+import { Container, Box, Typography, Chip, Stack, CircularProgress, Rating, Button, FormControl, FormControlLabel, Select, MenuItem, Switch, IconButton, Slider } from '@mui/material';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import Replay10Icon from '@mui/icons-material/Replay10';
+import Forward10Icon from '@mui/icons-material/Forward10';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import { useParams } from 'next/navigation'
@@ -10,6 +15,18 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import util from 'api/tvshows'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
 import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
+
+const SEEK_STEP = 10
+
+function formatTime(seconds: number) {
+  if (!Number.isFinite(seconds) || seconds < 0) return '0:00'
+  const total = Math.floor(seconds)
+  const hours = Math.floor(total / 3600)
+  const minutes = Math.floor((total % 3600) / 60)
+  const secs = total % 60
+  if (hours > 0) return `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+  return `${minutes}:${String(secs).padStart(2, '0')}`
+}
 
 type WatchProgress = {
   season: number
@@ -111,12 +128,173 @@ export default function Page() {
   const [autoPlay, setAutoPlay] = useState(false)
   const [autoNextEnabled, setAutoNextEnabled] = useState(true)
   const [progressReady, setProgressReady] = useState(false)
+  const [resumeAt, setResumeAt] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [muted, setMuted] = useState(false)
+  const [volume, setVolume] = useState(1)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [seeking, setSeeking] = useState(false)
+  const [nativeFullscreen, setNativeFullscreen] = useState(false)
+  const [playerEpoch, setPlayerEpoch] = useState(0)
   const { containerRef, cssFullscreen, enterFullscreen, exitFullscreen } = usePlayerFullscreen()
+  const playerRef = useRef<HTMLIFrameElement>(null)
   const restoredShowId = useRef<string | null>(null)
   const ignoreEndedUntil = useRef(0)
   const lastHandledEpisode = useRef('')
   const autoNextRef = useRef(true)
+  const seekingRef = useRef(false)
   const playbackRef = useRef({ season: 1, episode: 1, seasons: [] as Season[], episodes: [] as Episode[] })
+  const mediaRef = useRef({ currentTime: 0, duration: 0, volume: 1, playing: false })
+
+  const sendPlayerCommand = useCallback((command: string, extra: Record<string, unknown> = {}) => {
+    const target = playerRef.current?.contentWindow
+    if (!target) return
+
+    const time = extra.time
+    const level = extra.level
+    const mutedValue = extra.muted
+    const args =
+      typeof time === 'number'
+        ? [time]
+        : typeof level === 'number'
+          ? [level]
+          : typeof mutedValue === 'boolean'
+            ? [mutedValue]
+            : []
+
+    const messages: unknown[] = [
+      { command, ...extra },
+      JSON.stringify({ command, ...extra }),
+      { type: command, ...extra },
+      { method: command, ...extra },
+      { action: command, ...extra },
+      { type: 'PLAYER_COMMAND', command, ...extra },
+      JSON.stringify({ event: 'command', func: command, args })
+    ]
+
+    if (command === 'seek' && typeof time === 'number') {
+      messages.push(
+        { command: 'seekTo', time, seconds: time, currentTime: time },
+        JSON.stringify({ command: 'seekTo', time }),
+        JSON.stringify({ event: 'command', func: 'seekTo', args: [time, true] })
+      )
+    }
+
+    if (command === 'volume' && typeof level === 'number') {
+      messages.push(
+        { command: 'setVolume', volume: level, level },
+        JSON.stringify({ event: 'command', func: 'setVolume', args: [Math.round(level * 100)] })
+      )
+    }
+
+    if (command === 'mute') {
+      const muteCommand = mutedValue ? 'mute' : 'unmute'
+      messages.push(
+        { command: muteCommand },
+        JSON.stringify({ command: muteCommand }),
+        { command: 'setMuted', muted: mutedValue },
+        JSON.stringify({ event: 'command', func: mutedValue ? 'mute' : 'unMute', args: [] })
+      )
+    }
+
+    messages.forEach((msg) => {
+      try {
+        target.postMessage(msg, '*')
+      } catch {
+        // ignore unsupported payload types
+      }
+    })
+  }, [])
+
+  const reloadPlayerAt = (time: number, options: { play?: boolean; muted?: boolean } = {}) => {
+    const max = mediaRef.current.duration
+    const nextTime = Math.max(0, Math.floor(max > 0 ? Math.min(time, max) : time))
+    mediaRef.current.currentTime = nextTime
+    setCurrentTime(nextTime)
+    setResumeAt(nextTime)
+    if (options.play !== undefined) {
+      mediaRef.current.playing = options.play
+      setPlaying(options.play)
+      setAutoPlay(options.play)
+    }
+    if (options.muted !== undefined) setMuted(options.muted)
+    setPlayerEpoch((value) => value + 1)
+  }
+
+  const handlePlay = () => {
+    sendPlayerCommand('play')
+    mediaRef.current.playing = true
+    setPlaying(true)
+    setAutoPlay(true)
+    setResumeAt(Math.floor(mediaRef.current.currentTime))
+  }
+
+  const handlePause = () => {
+    sendPlayerCommand('pause')
+    mediaRef.current.playing = false
+    setPlaying(false)
+  }
+
+  const handleSeek = (time: number) => {
+    sendPlayerCommand('seek', { time })
+    reloadPlayerAt(time, { play: mediaRef.current.playing })
+  }
+
+  const handleSkip = (delta: number) => {
+    handleSeek(mediaRef.current.currentTime + delta)
+  }
+
+  const handleMuteToggle = () => {
+    const nextMuted = !muted
+    sendPlayerCommand('mute', { muted: nextMuted })
+    if (!nextMuted && volume === 0) {
+      setVolume(1)
+      sendPlayerCommand('volume', { level: 1 })
+    }
+    reloadPlayerAt(mediaRef.current.currentTime, {
+      play: mediaRef.current.playing,
+      muted: nextMuted
+    })
+  }
+
+  const handleVolumeChange = (_event: Event, value: number | number[]) => {
+    const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
+    setVolume(nextVolume)
+    sendPlayerCommand('volume', { level: nextVolume })
+  }
+
+  const handleVolumeCommit = (_event: Event | React.SyntheticEvent, value: number | number[]) => {
+    const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
+    const nextMuted = nextVolume === 0
+    setMuted(nextMuted)
+    sendPlayerCommand('mute', { muted: nextMuted })
+    if (nextMuted !== muted) {
+      reloadPlayerAt(mediaRef.current.currentTime, {
+        play: mediaRef.current.playing,
+        muted: nextMuted
+      })
+    }
+  }
+
+  const handleSeekChange = (_event: Event, value: number | number[]) => {
+    const nextTime = Array.isArray(value) ? value[0] : value
+    seekingRef.current = true
+    setSeeking(true)
+    setCurrentTime(nextTime)
+  }
+
+  const handleSeekCommit = (_event: Event | React.SyntheticEvent, value: number | number[]) => {
+    const nextTime = Array.isArray(value) ? value[0] : value
+    seekingRef.current = false
+    setSeeking(false)
+    handleSeek(nextTime)
+  }
+
+  const toggleFullscreen = () => {
+    if (cssFullscreen || document.fullscreenElement) exitFullscreen()
+    else enterFullscreen()
+  }
 
   useEffect(() => {
     if (!params.id) return
@@ -125,6 +303,11 @@ export default function Page() {
     setAutoPlay(false)
     setSeason(1)
     setEpisode(1)
+    setResumeAt(0)
+    setPlaying(false)
+    setCurrentTime(0)
+    setDuration(0)
+    setPlayerEpoch(0)
     ignoreEndedUntil.current = 0
     lastHandledEpisode.current = ''
     ;(async () => {
@@ -172,6 +355,32 @@ export default function Page() {
   }, [season, episode, seasons, episodes])
 
   useEffect(() => {
+    mediaRef.current = {
+      currentTime,
+      duration: duration > 0 ? duration : (episodes.find((ep) => ep.episode_number === episode)?.runtime || show?.episode_run_time?.[0] || 0) * 60,
+      volume,
+      playing
+    }
+  }, [currentTime, duration, volume, playing, episode, episodes, show?.episode_run_time])
+
+  useEffect(() => {
+    if (!playing) return
+    let last = Date.now()
+    const id = window.setInterval(() => {
+      if (seekingRef.current) return
+      const now = Date.now()
+      const delta = (now - last) / 1000
+      last = now
+      const max = mediaRef.current.duration
+      const next = mediaRef.current.currentTime + delta
+      const clamped = max > 0 ? Math.min(next, max) : next
+      mediaRef.current.currentTime = clamped
+      setCurrentTime(clamped)
+    }, 250)
+    return () => window.clearInterval(id)
+  }, [playing])
+
+  useEffect(() => {
     autoNextRef.current = autoNextEnabled
   }, [autoNextEnabled])
 
@@ -184,6 +393,13 @@ export default function Page() {
     setSeason(nextSeason)
     setEpisode(nextEpisode)
     setAutoPlay(shouldAutoPlay)
+    setPlaying(shouldAutoPlay)
+    setResumeAt(0)
+    setCurrentTime(0)
+    setDuration(0)
+    setPlayerEpoch(0)
+    mediaRef.current.currentTime = 0
+    mediaRef.current.playing = shouldAutoPlay
   }, [])
 
   const goToNextEpisode = useCallback((fromUser = false) => {
@@ -228,8 +444,6 @@ export default function Page() {
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
-      if (typeof event.origin === 'string' && event.origin && !event.origin.includes('vidfast')) return
-
       let payload = event.data
       if (typeof payload === 'string') {
         try {
@@ -238,12 +452,26 @@ export default function Page() {
           return
         }
       }
-      if (!payload) return
+      if (!payload || typeof payload !== 'object') return
 
-      const eventName = payload?.data?.event || payload?.event
-      const currentTime = Number(payload?.data?.currentTime)
-      const duration = Number(payload?.data?.duration)
-      const nearlyEnded = duration > 30 && currentTime / duration >= 0.995
+      const fromVidfast = typeof event.origin === 'string' && event.origin.includes('vidfast')
+      const looksLikePlayer =
+        payload?.type === 'PLAYER_EVENT' ||
+        payload?.type === 'MEDIA_DATA' ||
+        payload?.type === 'PLAYER_NEXT_EPISODE' ||
+        payload?.data?.event ||
+        payload?.data?.progress ||
+        payload?.progress
+      if (!fromVidfast && !looksLikePlayer) return
+
+      const data = payload.data || payload
+      const entry = data?.[`t${params.id}`] || data?.[params.id] || data
+      const eventName = entry?.event || data?.event || payload?.event || payload?.type
+      const progress = entry?.progress || data?.progress
+      const eventTime = Number(progress?.watched ?? entry?.currentTime ?? data?.currentTime ?? data?.timestamp ?? payload?.currentTime)
+      const eventDuration = Number(progress?.duration ?? entry?.duration ?? data?.duration ?? payload?.duration)
+      const nextVolume = Number(data?.volume ?? data?.level ?? entry?.volume)
+      const nearlyEnded = eventDuration > 30 && eventTime / eventDuration >= 0.995
       const isEnded =
         eventName === 'ended' ||
         eventName === 'complete' ||
@@ -251,12 +479,44 @@ export default function Page() {
         payload?.type === 'ended' ||
         nearlyEnded
 
+      if (!seekingRef.current && Number.isFinite(eventTime) && eventTime >= 0) {
+        mediaRef.current.currentTime = eventTime
+        setCurrentTime(eventTime)
+      }
+      if (Number.isFinite(eventDuration) && eventDuration > 0) {
+        mediaRef.current.duration = eventDuration
+        setDuration(eventDuration)
+      }
+      if (Number.isFinite(nextVolume)) setVolume(Math.min(1, Math.max(0, nextVolume > 1 ? nextVolume / 100 : nextVolume)))
+      if (typeof data?.muted === 'boolean') setMuted(data.muted)
+
+      if (eventName === 'play' || eventName === 'playing') {
+        mediaRef.current.playing = true
+        setPlaying(true)
+      }
+      if (eventName === 'pause') {
+        mediaRef.current.playing = false
+        setPlaying(false)
+      }
+
       if (isEnded && autoNextRef.current) goToNextEpisode()
     }
 
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [goToNextEpisode])
+  }, [goToNextEpisode, params.id])
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setNativeFullscreen(Boolean(document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement))
+    }
+    document.addEventListener('fullscreenchange', onFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', onFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', onFullscreenChange)
+    }
+  }, [])
 
   const handleSeasonChange = (seasonNumber: number) => {
     lastHandledEpisode.current = ''
@@ -268,9 +528,16 @@ export default function Page() {
     params.show.split('%20').join(' ').split('%3A').join(':').split('%3').join(': ').split('%26').join('&')
 
   const runtime = show?.episode_run_time?.[0]
-  const playerQuery = autoPlay
-    ? '?autoPlay=true&nextButton=false&autoNext=false&fullscreenButton=false'
-    : '?nextButton=false&autoNext=false&fullscreenButton=false'
+  const playerQuery = [
+    autoPlay ? 'autoPlay=true' : '',
+    resumeAt > 0 ? `startAt=${resumeAt}` : '',
+    muted ? 'muted=true' : '',
+    'nextButton=false',
+    'autoNext=false',
+    'fullscreenButton=false'
+  ]
+    .filter(Boolean)
+    .join('&')
 
   const firstSeason = seasons[0]?.season_number || 1
   const lastSeasonNumber = seasons[seasons.length - 1]?.season_number
@@ -281,19 +548,25 @@ export default function Page() {
   const isFirstEpisode = season <= firstSeason && episode <= 1
   const isLastEpisode = (lastSeasonNumber == null || season >= lastSeasonNumber) && episode >= lastEpisodeInSeason
   const currentEpisode = episodes.find((ep) => ep.episode_number === episode)
+  const isFullscreen = cssFullscreen || nativeFullscreen
+  const mediaDuration = duration > 0 ? duration : (currentEpisode?.runtime || runtime || 0) * 60
 
   return (
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
       <Box
         ref={containerRef}
         sx={{
-          position: 'relative',
-          height: { xs: '400px', md: '500px', lg: '630px' },
+          display: 'flex',
+          flexDirection: 'column',
           width: '100%',
-          bgcolor: '#000',
           '&:fullscreen, &:-webkit-full-screen': {
             width: '100%',
-            height: '100%'
+            height: '100%',
+            bgcolor: '#000',
+            '& > :first-of-type': {
+              flex: 1,
+              height: 'auto'
+            }
           },
           ...(cssFullscreen && {
             position: 'fixed',
@@ -301,89 +574,161 @@ export default function Page() {
             zIndex: 2000,
             width: '100%',
             height: '100%',
+            bgcolor: '#000',
             borderRadius: 0
           })
         }}
       >
-        <iframe
-          // sandbox="allow-scripts allow-same-origin"
-          // Download
-          key={`${params.id}-${season}-${episode}`}
-          src={`https://vidfast.vc/tv/${params.id}/${season}/${episode}${playerQuery}`}
-          title={(show?.name || fallbackTitle || '') + ''}
-          frameBorder="0"
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-          referrerPolicy=""
-          allowFullScreen
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
-        ></iframe>
-        {cssFullscreen && (
-          <IconButton
-            aria-label="Exit fullscreen"
-            onClick={exitFullscreen}
-            sx={{
+        <Box
+          sx={{
+            position: 'relative',
+            height: { xs: '400px', md: '500px', lg: '630px' },
+            width: '100%',
+            bgcolor: '#000',
+            flex: isFullscreen ? 1 : undefined
+          }}
+        >
+          <iframe
+            // sandbox="allow-scripts allow-same-origin"
+            // Download
+            key={`${params.id}-${season}-${episode}-${playerEpoch}`}
+            ref={playerRef}
+            src={`https://vidfast.vc/tv/${params.id}/${season}/${episode}?${playerQuery}`}
+            title={(show?.name || fallbackTitle || '') + ''}
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+            referrerPolicy=""
+            allowFullScreen
+            style={{
               position: 'absolute',
-              top: { xs: 'max(12px, env(safe-area-inset-top))', sm: 8 },
-              right: 8,
-              zIndex: 1,
-              color: '#fff',
-              bgcolor: 'rgba(0,0,0,0.55)',
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              border: 0,
+              pointerEvents: 'none'
             }}
-          >
-            <FullscreenExitIcon />
-          </IconButton>
-        )}
-      </Box>
+          ></iframe>
+          <Box aria-hidden sx={{ position: 'absolute', inset: 0, zIndex: 1 }} />
+          {isFullscreen && (
+            <IconButton
+              aria-label="Exit fullscreen"
+              onClick={exitFullscreen}
+              sx={{
+                position: 'absolute',
+                top: { xs: 'max(12px, env(safe-area-inset-top))', sm: 8 },
+                right: 8,
+                zIndex: 2,
+                color: '#fff',
+                bgcolor: 'rgba(0,0,0,0.55)',
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }
+              }}
+            >
+              <FullscreenExitIcon />
+            </IconButton>
+          )}
+        </Box>
 
-      <Stack
-        direction="row"
-        spacing={1}
-        alignItems="center"
-        flexWrap="wrap"
-        useFlexGap
-        sx={{ pt: 2, pb: 1 }}
-      >
-        <Button variant="outlined" size="small" startIcon={<PlayArrowIcon />} onClick={() => setAutoPlay(true)}>
-          Play
-        </Button>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<SkipPreviousIcon />}
-          disabled={loading || isFirstEpisode}
-          onClick={goToPreviousEpisode}
+        <Stack
+          direction="row"
+          spacing={1}
+          alignItems="center"
+          flexWrap="wrap"
+          useFlexGap
+          sx={{
+            pt: 2,
+            pb: 1,
+            px: isFullscreen ? 2 : 0,
+            bgcolor: isFullscreen ? '#000' : 'transparent'
+          }}
         >
-          Previous
-        </Button>
-        <Button
-          variant="outlined"
-          size="small"
-          endIcon={<SkipNextIcon />}
-          disabled={loading || isLastEpisode}
-          onClick={() => goToNextEpisode(true)}
-        >
-          Next
-        </Button>
-        <FormControlLabel
-          control={
-            <Switch
-              size="small"
-              checked={autoNextEnabled}
-              onChange={(event) => setAutoNextEnabled(event.target.checked)}
-            />
-          }
-          label="Auto Next"
-        />
-        <Button variant="outlined" size="small" startIcon={<FullscreenIcon />} onClick={enterFullscreen}>
-          Fullscreen
-        </Button>
-        {currentEpisode && (
-          <Typography variant="body2" color="text.secondary">
-            S{season}:E{episode} {currentEpisode.name}
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={playing ? <PauseIcon /> : <PlayArrowIcon />}
+            onClick={playing ? handlePause : handlePlay}
+          >
+            {playing ? 'Pause' : 'Play'}
+          </Button>
+          <Button variant="outlined" size="small" startIcon={<Replay10Icon />} onClick={() => handleSkip(-SEEK_STEP)}>
+            -10s
+          </Button>
+          <Button variant="outlined" size="small" startIcon={<Forward10Icon />} onClick={() => handleSkip(SEEK_STEP)}>
+            +10s
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<SkipPreviousIcon />}
+            disabled={loading || isFirstEpisode}
+            onClick={goToPreviousEpisode}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            endIcon={<SkipNextIcon />}
+            disabled={loading || isLastEpisode}
+            onClick={() => goToNextEpisode(true)}
+          >
+            Next
+          </Button>
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={autoNextEnabled}
+                onChange={(event) => setAutoNextEnabled(event.target.checked)}
+              />
+            }
+            label="Auto Next"
+          />
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={muted || volume === 0 ? <VolumeOffIcon /> : <VolumeUpIcon />}
+            onClick={handleMuteToggle}
+          >
+            {muted || volume === 0 ? 'Unmute' : 'Mute'}
+          </Button>
+          <Slider
+            size="small"
+            aria-label="Volume"
+            value={muted ? 0 : Math.round(volume * 100)}
+            onChange={handleVolumeChange}
+            onChangeCommitted={handleVolumeCommit}
+            sx={{ width: 88, mx: 0.5 }}
+          />
+          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 84, textAlign: 'center' }}>
+            {formatTime(currentTime)} / {formatTime(mediaDuration)}
           </Typography>
-        )}
-      </Stack>
+          <Slider
+            size="small"
+            aria-label="Seek"
+            min={0}
+            max={mediaDuration > 0 ? mediaDuration : 1}
+            step={1}
+            value={mediaDuration > 0 ? Math.min(currentTime, mediaDuration) : 0}
+            disabled={mediaDuration <= 0 && !seeking}
+            onChange={handleSeekChange}
+            onChangeCommitted={handleSeekCommit}
+            sx={{ flex: 1, minWidth: 140 }}
+          />
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            onClick={toggleFullscreen}
+          >
+            {isFullscreen ? 'Exit' : 'Fullscreen'}
+          </Button>
+          {currentEpisode && (
+            <Typography variant="body2" color="text.secondary">
+              S{season}:E{episode} {currentEpisode.name}
+            </Typography>
+          )}
+        </Stack>
+      </Box>
 
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
