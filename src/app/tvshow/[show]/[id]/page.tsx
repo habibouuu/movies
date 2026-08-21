@@ -6,8 +6,6 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import Replay10Icon from '@mui/icons-material/Replay10';
 import Forward10Icon from '@mui/icons-material/Forward10';
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import { useParams } from 'next/navigation'
@@ -130,7 +128,6 @@ export default function Page() {
   const [progressReady, setProgressReady] = useState(false)
   const [resumeAt, setResumeAt] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [muted, setMuted] = useState(false)
   const [volume, setVolume] = useState(1)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -153,15 +150,7 @@ export default function Page() {
 
     const time = extra.time
     const level = extra.level
-    const mutedValue = extra.muted
-    const args =
-      typeof time === 'number'
-        ? [time]
-        : typeof level === 'number'
-          ? [level]
-          : typeof mutedValue === 'boolean'
-            ? [mutedValue]
-            : []
+    const args = typeof time === 'number' ? [time] : typeof level === 'number' ? [level] : []
 
     const messages: unknown[] = [
       { command, ...extra },
@@ -188,16 +177,6 @@ export default function Page() {
       )
     }
 
-    if (command === 'mute') {
-      const muteCommand = mutedValue ? 'mute' : 'unmute'
-      messages.push(
-        { command: muteCommand },
-        JSON.stringify({ command: muteCommand }),
-        { command: 'setMuted', muted: mutedValue },
-        JSON.stringify({ event: 'command', func: mutedValue ? 'mute' : 'unMute', args: [] })
-      )
-    }
-
     messages.forEach((msg) => {
       try {
         target.postMessage(msg, '*')
@@ -207,7 +186,7 @@ export default function Page() {
     })
   }, [])
 
-  const reloadPlayerAt = (time: number, options: { play?: boolean; muted?: boolean } = {}) => {
+  const reloadPlayerAt = (time: number, options: { play?: boolean } = {}) => {
     const max = mediaRef.current.duration
     const nextTime = Math.max(0, Math.floor(max > 0 ? Math.min(time, max) : time))
     mediaRef.current.currentTime = nextTime
@@ -218,13 +197,15 @@ export default function Page() {
       setPlaying(options.play)
       setAutoPlay(options.play)
     }
-    if (options.muted !== undefined) setMuted(options.muted)
     setPlayerEpoch((value) => value + 1)
   }
 
   const handlePlay = () => {
     sendPlayerCommand('play')
+    sendPlayerCommand('volume', { level: 1 })
     mediaRef.current.playing = true
+    mediaRef.current.volume = 1
+    setVolume(1)
     setPlaying(true)
     setAutoPlay(true)
     setResumeAt(Math.floor(mediaRef.current.currentTime))
@@ -245,36 +226,10 @@ export default function Page() {
     handleSeek(mediaRef.current.currentTime + delta)
   }
 
-  const handleMuteToggle = () => {
-    const nextMuted = !muted
-    sendPlayerCommand('mute', { muted: nextMuted })
-    if (!nextMuted && volume === 0) {
-      setVolume(1)
-      sendPlayerCommand('volume', { level: 1 })
-    }
-    reloadPlayerAt(mediaRef.current.currentTime, {
-      play: mediaRef.current.playing,
-      muted: nextMuted
-    })
-  }
-
   const handleVolumeChange = (_event: Event, value: number | number[]) => {
     const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
     setVolume(nextVolume)
     sendPlayerCommand('volume', { level: nextVolume })
-  }
-
-  const handleVolumeCommit = (_event: Event | React.SyntheticEvent, value: number | number[]) => {
-    const nextVolume = (Array.isArray(value) ? value[0] : value) / 100
-    const nextMuted = nextVolume === 0
-    setMuted(nextMuted)
-    sendPlayerCommand('mute', { muted: nextMuted })
-    if (nextMuted !== muted) {
-      reloadPlayerAt(mediaRef.current.currentTime, {
-        play: mediaRef.current.playing,
-        muted: nextMuted
-      })
-    }
   }
 
   const handleSeekChange = (_event: Event, value: number | number[]) => {
@@ -470,7 +425,6 @@ export default function Page() {
       const progress = entry?.progress || data?.progress
       const eventTime = Number(progress?.watched ?? entry?.currentTime ?? data?.currentTime ?? data?.timestamp ?? payload?.currentTime)
       const eventDuration = Number(progress?.duration ?? entry?.duration ?? data?.duration ?? payload?.duration)
-      const nextVolume = Number(data?.volume ?? data?.level ?? entry?.volume)
       const nearlyEnded = eventDuration > 30 && eventTime / eventDuration >= 0.995
       const isEnded =
         eventName === 'ended' ||
@@ -487,8 +441,6 @@ export default function Page() {
         mediaRef.current.duration = eventDuration
         setDuration(eventDuration)
       }
-      if (Number.isFinite(nextVolume)) setVolume(Math.min(1, Math.max(0, nextVolume > 1 ? nextVolume / 100 : nextVolume)))
-      if (typeof data?.muted === 'boolean') setMuted(data.muted)
 
       if (eventName === 'play' || eventName === 'playing') {
         mediaRef.current.playing = true
@@ -531,7 +483,6 @@ export default function Page() {
   const playerQuery = [
     autoPlay ? 'autoPlay=true' : '',
     resumeAt > 0 ? `startAt=${resumeAt}` : '',
-    muted ? 'muted=true' : '',
     'nextButton=false',
     'autoNext=false',
     'fullscreenButton=false'
@@ -599,6 +550,7 @@ export default function Page() {
             allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
             referrerPolicy=""
             allowFullScreen
+            onLoad={() => sendPlayerCommand('volume', { level: 1 })}
             style={{
               position: 'absolute',
               inset: 0,
@@ -683,20 +635,11 @@ export default function Page() {
             }
             label="Auto Next"
           />
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={muted || volume === 0 ? <VolumeOffIcon /> : <VolumeUpIcon />}
-            onClick={handleMuteToggle}
-          >
-            {muted || volume === 0 ? 'Unmute' : 'Mute'}
-          </Button>
           <Slider
             size="small"
             aria-label="Volume"
-            value={muted ? 0 : Math.round(volume * 100)}
+            value={Math.round(volume * 100)}
             onChange={handleVolumeChange}
-            onChangeCommitted={handleVolumeCommit}
             sx={{ width: 88, mx: 0.5 }}
           />
           <Typography variant="caption" color="text.secondary" sx={{ minWidth: 84, textAlign: 'center' }}>
