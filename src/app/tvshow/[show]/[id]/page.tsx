@@ -14,6 +14,7 @@ import util from 'api/tvshows'
 import FrameworkSection from 'components/landingpage/FrameworkSection'
 import UserSaveActions from 'components/app/UserSaveActions'
 import usePlayerFullscreen from 'hooks/usePlayerFullscreen'
+import useIdleControls from 'hooks/useIdleControls'
 import userLists from 'api/userFunctions'
 
 const SEEK_STEP = 10
@@ -507,7 +508,15 @@ export default function Page() {
   const isLastEpisode = (lastSeasonNumber == null || season >= lastSeasonNumber) && episode >= lastEpisodeInSeason
   const currentEpisode = episodes.find((ep) => ep.episode_number === episode)
   const isFullscreen = cssFullscreen || nativeFullscreen
+  const controlsVisible = useIdleControls(isFullscreen && !seeking)
   const mediaDuration = duration > 0 ? duration : (currentEpisode?.runtime || runtime || 0) * 60
+  const idleControlSx = isFullscreen
+    ? {
+        opacity: controlsVisible ? 1 : 0,
+        pointerEvents: controlsVisible ? 'auto' : 'none',
+        transition: 'opacity 0.25s ease'
+      }
+    : {}
 
   return (
     <Container sx={{ mt: 2, display: 'flex', flexDirection: 'column', pb: 4 }}>
@@ -517,6 +526,8 @@ export default function Page() {
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
+          position: 'relative',
+          cursor: isFullscreen && !controlsVisible ? 'none' : undefined,
           '&:fullscreen, &:-webkit-full-screen': {
             width: '100%',
             height: '100%',
@@ -579,7 +590,8 @@ export default function Page() {
                 zIndex: 2,
                 color: '#fff',
                 bgcolor: 'rgba(0,0,0,0.55)',
-                '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' }
+                '&:hover': { bgcolor: 'rgba(0,0,0,0.75)' },
+                ...idleControlSx
               }}
             >
               <FullscreenExitIcon />
@@ -597,7 +609,15 @@ export default function Page() {
             pt: 2,
             pb: 1,
             px: isFullscreen ? 2 : 0,
-            bgcolor: isFullscreen ? '#000' : 'transparent'
+            bgcolor: isFullscreen ? '#000' : 'transparent',
+            ...(isFullscreen && {
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 3
+            }),
+            ...idleControlSx
           }}
         >
           <Button
